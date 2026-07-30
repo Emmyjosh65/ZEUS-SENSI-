@@ -950,7 +950,7 @@ ul { list-style: none; }
       <h4>Fair Use</h4>
       <p>Do not misuse this tool for illegal activities. Free Fire is a trademark of its respective owners. ZEUS SENSI is an independent fan utility and is not affiliated with Garena.</p>
       <h4>No Warranty</h4>
-      <p>Settings are provided “as is” without guarantees of performance. Use at your own discretion.</p>
+      <p>Settings are provided "as is" without guarantees of performance. Use at your own discretion.</p>
       <h4>Premium Access</h4>
       <p>Some generators require an access PIN distributed by the owner. Unauthorized redistribution of access credentials is prohibited.</p>
     </div>
@@ -1033,7 +1033,7 @@ ul { list-style: none; }
     { q: 'Who created this?', a: 'ZEUS DEV (ZEUS). Contact via WhatsApp 09066760078 or follow the official channels.' }
   ];
 
-  /* Access gate — decoded only in memory during validation */
+  /* === PIN: 1994 === */
   const _g = () => String.fromCharCode(49, 57, 57, 52);
 
   const Store = {
@@ -1060,7 +1060,7 @@ ul { list-style: none; }
       const d = this.read();
       d.settings = { ...d.settings, ...s };
       this.write(d);
-      return d.settings;
+      return d;
     },
     pushHistory(item) {
       const d = this.read();
@@ -1156,7 +1156,7 @@ ul { list-style: none; }
     setTimeout(() => r.remove(), 600);
   });
 
-  /* ---------- Audio (WebAudio beeps — no external files) ---------- */
+  /* ---------- Audio (WebAudio) ---------- */
   let audioCtx = null;
   function ensureAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1192,7 +1192,7 @@ ul { list-style: none; }
     } catch (_) {}
   }
 
-  /* Ambient music loop (simple generative pad) */
+  /* Ambient music */
   let musicNodes = null;
   function startMusic() {
     stopMusic();
@@ -1358,10 +1358,9 @@ ul { list-style: none; }
     const bb = brandBias[data.brand] || 0;
     const mb = modeBias[data.mode] || modeBias.Balanced;
     const f = parseInt(data.fingers, 10) || 2;
-    const fingerAdj = (f - 2) * 2;
 
-    const general = pickRange(rand, 88 + bb + mb.g + fingerAdj, 10);
-    const redDot = pickRange(rand, 84 + bb + mb.rd + fingerAdj, 12);
+    const general = pickRange(rand, 88 + bb + mb.g + (f-2)*2, 10);
+    const redDot = pickRange(rand, 84 + bb + mb.rd + (f-2)*2, 12);
     const x2 = pickRange(rand, 72 + bb + mb.x2, 12);
     const x4 = pickRange(rand, 64 + bb + mb.x4, 12);
     const sniper = pickRange(rand, 58 + bb + mb.sn, 14);
@@ -1369,14 +1368,13 @@ ul { list-style: none; }
 
     const dpiBase = 400 + bb * 20 + f * 15 + (data.mode === 'Fast Drag' || data.mode === 'Aggressive' ? 80 : 0);
     const dpi = clamp(Math.round(dpiBase + rand() * 60), 320, 720);
+    const graphics = ['Smooth','Smooth + Shadow','Standard','Standard + Shadow'][Math.floor(rand()*4)];
+    const fps = ['High','Higher','Ultra','Max (if supported)'][Math.min(3, Math.floor(f/2) + Math.floor(rand()*2))];
+    const touch = pickRange(rand, 80 + (f-2)*2, 12);
+    const aim = pickRange(rand, 78 + (mb.rd||0)/2, 10);
+    const move = pickRange(rand, 82 + (f-2)*2, 10);
 
-    const graphics = ['Smooth', 'Smooth + Shadow', 'Standard', 'Standard + Shadow'][Math.floor(rand() * 4)];
-    const fps = ['High', 'Higher', 'Ultra', 'Max (if supported)'][Math.min(3, Math.floor(f / 2) + Math.floor(rand() * 2))];
-    const touch = pickRange(rand, 80 + fingerAdj, 12);
-    const aim = pickRange(rand, 78 + (mb.rd || 0) / 2, 10);
-    const move = pickRange(rand, 82 + fingerAdj, 10);
-
-    const tips = [
+    const tipsPool = [
       'Warm up 5–10 minutes in training before ranked.',
       'Keep fire button slightly larger for better hipfire control.',
       'Disable auto-pick junk items to reduce lag spikes.',
@@ -1387,7 +1385,7 @@ ul { list-style: none; }
       'Lower graphics if you drop below stable FPS — consistency beats visuals.'
     ];
     const chosenTips = [];
-    const pool = [...tips];
+    const pool = [...tipsPool];
     while (chosenTips.length < 4 && pool.length) {
       chosenTips.push(pool.splice(Math.floor(rand() * pool.length), 1)[0]);
     }
@@ -1410,7 +1408,8 @@ ul { list-style: none; }
         'FPS Recommendation': fps,
         'Touch Sensitivity': touch,
         'Aim Precision': aim,
-        'Movement Optimization': move
+        'Movement Optimization': move,
+        'Shooting Button Size': f <= 2 ? '43–45%' : f === 3 ? '45–47%' : f === 4 ? '47–48%' : '48–50%'
       },
       tips: chosenTips,
       id: 's_' + seed.toString(16)
@@ -1437,15 +1436,18 @@ ul { list-style: none; }
       'Recommended Style': data.style,
       'Device Fit': data.brand + ' · ' + data.phone
     };
-    const tips = [
-      'Import one code at a time and test in training ground.',
-      'Adjust fire button so your thumb naturally rests without stretch.',
-      <!-- ===== CONTINUATION – APPEND THIS FROM WHERE THE CODE WAS TRUNCATED ===== -->
-      'Keep minimap uncluttered — hide unnecessary icons during gameplay.',
-      'Match joystick size to thumb reach; not too large or you drag across screen.'
+    const tipsPool = [
+      'Test each HUD code in training before using in ranked.',
+      'Keep fire button where thumb naturally rests.',
+      'Minimap size: medium — big enough to see, small enough to not block vision.',
+      f >= 3 ? 'Map peek and scope to index fingers for faster reactions.' : 'Consider 3-finger claw for a major advantage.',
+      'Disable auto-parachute for better drop control.',
+      'Reduce HUD transparency gradually — too transparent causes eye strain.',
+      'Match joystick size to thumb reach, not screen size.',
+      'Crouch + peek combo wins more close-range fights.'
     ];
     const picked = [];
-    const tpool = [...tips];
+    const tpool = [...tipsPool];
     for (let i = 0; i < 4 && tpool.length; i++) {
       picked.push(tpool.splice(Math.floor(rand() * tpool.length), 1)[0]);
     }
@@ -1521,7 +1523,6 @@ ul { list-style: none; }
 
     panel.innerHTML = html;
 
-    // Attach listeners
     $$('[data-sel]', panel).forEach(el => {
       el.addEventListener('click', () => {
         const val = el.dataset.value;
@@ -1542,7 +1543,6 @@ ul { list-style: none; }
       });
     }
 
-    // Nav buttons
     const nav = document.createElement('div');
     nav.style.cssText = 'display:flex;gap:10px;margin-top:20px';
     if (step > 0) {
@@ -1584,7 +1584,6 @@ ul { list-style: none; }
           return;
         }
         sfx('success');
-        // Generate sensitivity
         const result = genSensi(sensiData);
         Store.pushHistory(result);
         showSensiResult(result);
@@ -1631,7 +1630,6 @@ ul { list-style: none; }
       html += `</ul></div>`;
     }
 
-    // Owner message
     html += `<div class="glass-strong welcome-box mt-2">
       <h3>🎉 Congratulations!</h3>
       <p>Your premium sensitivity has been generated successfully.</p>
@@ -1646,7 +1644,7 @@ ul { list-style: none; }
       <button class="btn btn-outline btn-sm" id="sensi-download" data-dl><i class="fa-solid fa-download"></i> Save</button>
       <button class="btn btn-outline btn-sm" id="sensi-share" data-share><i class="fa-solid fa-share-nodes"></i> Share</button>
     </div>
-    <button class="btn btn-ghost btn-block mt-1" id="sensi-fav" data-fav><i class="fa-solid ${fav ? 'fa-star' : 'fa-star'}"></i> ${fav ? 'Remove from Favorites' : 'Add to Favorites'}</button>
+    <button class="btn btn-ghost btn-block mt-1" id="sensi-fav" data-fav><i class="fa-solid fa-star"></i> ${fav ? 'Remove from Favorites' : 'Add to Favorites'}</button>
     <button class="btn btn-ghost btn-block mt-1" data-nav="home"><i class="fa-solid fa-arrow-left"></i> Back to Home</button>`;
 
     panel.innerHTML = html;
@@ -1899,7 +1897,6 @@ ul { list-style: none; }
 
     panel.innerHTML = html;
 
-    // Copy individual codes
     $$('[data-copy-hud]').forEach(el => {
       el.addEventListener('click', () => {
         navigator.clipboard.writeText(el.dataset.copyHud).then(() => {
@@ -2110,8 +2107,7 @@ ul { list-style: none; }
       }
       searchResults.innerHTML = hits.map(item => {
         const icon = item.type === 'hud' ? 'fa-gamepad' : 'fa-crosshairs';
-        const sub = item.type === 'hud'
-          ? `${item.style} · ${item.fingers}` : `${item.mode} · ${item.fingers}`;
+        const sub = item.type === 'hud' ? `${item.style} · ${item.fingers}` : `${item.mode} · ${item.fingers}`;
         return `<div class="list-item" data-sr="${esc(item.id)}">
           <div class="li-icon"><i class="fa-solid ${icon}"></i></div>
           <div class="li-body">
@@ -2153,7 +2149,6 @@ ul { list-style: none; }
       sw.classList.toggle('on', nv);
       sw.setAttribute('aria-checked', nv);
       sfx('tap');
-
       if (key === 'particles') { particleOn = nv; }
       if (key === 'music') {
         if (nv) startMusic();
@@ -2227,7 +2222,6 @@ ul { list-style: none; }
       if (nv) startMusic();
       else stopMusic();
       sfx('tap');
-      // Sync settings page
       const sw = $('#sw-music');
       if (sw) { sw.classList.toggle('on', nv); sw.setAttribute('aria-checked', nv); }
     });
@@ -2266,7 +2260,7 @@ ul { list-style: none; }
   const hudBack = $('[data-hud-back]');
   if (hudBack) hudBack.addEventListener('click', () => go('home'));
 
-  /* ---------- PWA MANIFEST (dynamic) ---------- */
+  /* ---------- PWA MANIFEST ---------- */
   const manifestEl = $('#pwa-manifest');
   if (manifestEl) {
     const m = {
@@ -2292,32 +2286,21 @@ ul { list-style: none; }
     initParticles();
     drawParticles();
     window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
-
     const settings = Store.read().settings;
-
     if (settings.particles) particleOn = true;
     if (settings.reduceMotion) {
       document.querySelectorAll('.logo-core, .loader-logo, .btn-glow').forEach(el => {
         el.style.animationPlayState = 'paused';
       });
     }
-
-    // Hide loader after animation + extra delay
-    setTimeout(() => {
-      $('#loader').classList.add('hide');
-    }, 2000);
-
-    // Keyboard shortcut for PIN reveal
+    setTimeout(() => { $('#loader').classList.add('hide'); }, 2000);
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         const overlay = $('#modal-root .modal-overlay');
         if (overlay) overlay.remove();
       }
     });
-
-    // Sync switch states
     syncSettingsUI();
-
     console.log('⚡ ZEUS SENSI V5 Premium loaded');
     console.log('© ZEUS DEV | All rights reserved');
   }
@@ -2327,4 +2310,3 @@ ul { list-style: none; }
 </script>
 </body>
 </html>
-$$
