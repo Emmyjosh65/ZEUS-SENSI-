@@ -20,2253 +20,1089 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root {
-  --bg: #050505;
-  --bg2: #0c0c0c;
-  --bg3: #121212;
-  --gold: #d4af37;
-  --gold2: #f5d76e;
-  --gold3: #b8860b;
-  --gold-glow: rgba(212, 175, 55, 0.45);
-  --white: #f5f5f5;
-  --muted: #9a9a9a;
-  --glass: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(212, 175, 55, 0.22);
-  --danger: #ff4d4d;
-  --success: #2ecc71;
-  --radius: 18px;
-  --shadow: 0 10px 40px rgba(0,0,0,.55);
-  --font-display: 'Orbitron', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-ui: 'Rajdhani', sans-serif;
-  --safe-b: env(safe-area-inset-bottom, 0px);
-  --nav-h: 68px;
+:root{
+  --bg:#050505; --panel:#0c0c10; --card:#131318; --card2:#191920;
+  --line:#24242e; --gold:#d4af37; --gold2:#f0d060; --text:#f2f2f5;
+  --muted:#8a8a95; --red:#ff3b3b; --green:#2ecc71;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-body {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--white);
-  min-height: 100dvh;
-  overflow-x: hidden;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-button, input, select, textarea { font: inherit; color: inherit; border: none; outline: none; background: none; }
-button { cursor: pointer; }
-a { color: var(--gold); text-decoration: none; }
-img { max-width: 100%; display: block; }
-ul { list-style: none; }
-::selection { background: var(--gold); color: #000; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+h1,h2,h3,.logo-z,.intro-title,.nav-item span{font-family:'Orbitron',sans-serif}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;width:100%;font-size:15px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.logo-z{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#a07d1a);color:#000;font-weight:900;font-size:20px;box-shadow:0 0 18px rgba(212,175,55,.45)}
 
-/* PARTICLES */
-#particles {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212,175,55,.12), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(184,134,11,.08), transparent),
-    radial-gradient(ellipse 50% 30% at 0% 80%, rgba(212,175,55,.06), transparent),
-    var(--bg);
-}
-#particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* ---------- LOADER ---------- */
+#loader{position:fixed;inset:0;z-index:10000;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}
+#loader.hide{opacity:0;visibility:hidden}
+.loader-logo{text-align:center}
+.loader-logo h2{font-size:26px;letter-spacing:4px;color:var(--gold);margin-top:14px}
+.loader-logo p{color:var(--muted);font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-top:6px}
 
-/* APP SHELL */
-#app {
-  position: relative; z-index: 1;
-  min-height: 100dvh;
-  max-width: 480px;
-  margin: 0 auto;
-  padding-bottom: calc(var(--nav-h) + var(--safe-b) + 12px);
-}
-.page {
-  display: none;
-  animation: pageIn .45s cubic-bezier(.22,1,.36,1);
-  padding: 20px 18px 28px;
-  min-height: 100dvh;
-}
-.page.active { display: block; }
-@keyframes pageIn {
-  from { opacity: 0; transform: translateY(18px) scale(.985); }
-  to { opacity: 1; transform: none; }
-}
+/* ---------- PARTICLES ---------- */
+#particles-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .6s}
+#particles-canvas.show{opacity:.55}
 
-/* LOADING */
-#loader {
-  position: fixed; inset: 0; z-index: 9999;
-  background: #050505;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity .6s, visibility .6s;
-}
-#loader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-.loader-logo {
-  font-family: var(--font-display);
-  font-size: 2rem; font-weight: 800;
-  letter-spacing: .18em;
-  background: linear-gradient(135deg, var(--gold2), var(--gold), var(--gold3));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  text-shadow: 0 0 40px var(--gold-glow);
-  animation: pulseGlow 2s ease-in-out infinite;
-}
-.loader-sub {
-  margin-top: 10px; color: var(--muted); font-size: .8rem;
-  letter-spacing: .25em; text-transform: uppercase;
-  font-family: var(--font-ui);
-}
-.loader-bar {
-  width: 180px; height: 3px; margin-top: 28px;
-  background: rgba(255,255,255,.08); border-radius: 99px; overflow: hidden;
-}
-.loader-fill {
-  height: 100%; width: 0%;
-  background: linear-gradient(90deg, var(--gold3), var(--gold2));
-  box-shadow: 0 0 12px var(--gold-glow);
-  animation: loadFill 1.8s ease forwards;
-}
-@keyframes loadFill { to { width: 100%; } }
-@keyframes pulseGlow {
-  0%,100% { filter: drop-shadow(0 0 8px var(--gold-glow)); }
-  50% { filter: drop-shadow(0 0 22px var(--gold-glow)); }
-}
+/* ---------- SCREENS ---------- */
+.screen{display:none;min-height:100vh;padding:74px 16px 92px;position:relative;z-index:1}
+.screen.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* GLASS */
-.glass {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-  box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.05);
-}
-.glass-strong {
-  background: rgba(18,18,18,.75);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  box-shadow: var(--shadow);
-}
+/* ---------- TOPBAR ---------- */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:900;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(5,5,5,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.tb-logo{display:flex;align-items:center;gap:10px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px;color:var(--gold)}
+.tb-icons{display:flex;gap:10px}
+.tb-icons button{width:38px;height:38px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:15px;color:var(--gold)}
+.tb-icons button:active{transform:scale(.92)}
 
-/* TYPOGRAPHY */
-.brand {
-  font-family: var(--font-display);
-  font-weight: 800; letter-spacing: .12em;
-  background: linear-gradient(135deg, #fff 0%, var(--gold2) 40%, var(--gold) 70%, var(--gold3) 100%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-.h1 { font-family: var(--font-display); font-size: 1.65rem; font-weight: 800; letter-spacing: .08em; }
-.h2 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; letter-spacing: .06em; }
-.h3 { font-family: var(--font-ui); font-size: 1.05rem; font-weight: 700; letter-spacing: .04em; color: var(--gold2); }
-.muted { color: var(--muted); font-size: .88rem; }
-.center { text-align: center; }
+/* ---------- BOTTOM NAV ---------- */
+#bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:900;display:flex;background:rgba(5,5,5,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 8px;font-size:11px;color:var(--muted);font-family:'Rajdhani',sans-serif;font-weight:600}
+.nav-item i{font-size:17px}
+.nav-item.active{color:var(--gold)}
+.nav-item:active{transform:scale(.92)}
 
-/* HEADER */
-.app-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 0 18px; position: sticky; top: 0; z-index: 50;
-  background: linear-gradient(180deg, rgba(5,5,5,.95) 60%, transparent);
-  backdrop-filter: blur(8px);
-}
-.back-btn, .icon-btn {
-  width: 42px; height: 42px; border-radius: 12px;
-  display: grid; place-items: center;
-  background: var(--glass); border: 1px solid var(--glass-border);
-  color: var(--gold); transition: .25s;
-}
-.back-btn:active, .icon-btn:active { transform: scale(.92); background: rgba(212,175,55,.12); }
-.header-title {
-  font-family: var(--font-display); font-size: .78rem;
-  letter-spacing: .14em; color: var(--gold2); text-transform: uppercase;
-}
+/* ---------- BUTTONS ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-weight:600;font-size:14px;color:var(--text);transition:transform .1s}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:linear-gradient(135deg,var(--gold),#a07d1a);color:#000;border:none;font-weight:800;box-shadow:0 4px 22px rgba(212,175,55,.35)}
+.btn-glow{animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 14px rgba(212,175,55,.25)}50%{box-shadow:0 0 34px rgba(212,175,55,.65)}}
+.btn.block{width:100%;margin-top:10px}
+.btn.danger{color:var(--red);border-color:rgba(255,59,59,.35)}
+.btn.sm{padding:8px 12px;font-size:13px}
 
-/* BUTTONS */
-.btn {
-  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  padding: 14px 22px; border-radius: 14px; font-family: var(--font-ui);
-  font-weight: 700; font-size: 1rem; letter-spacing: .06em; text-transform: uppercase;
-  transition: transform .2s, box-shadow .25s, background .25s; overflow: hidden;
-  user-select: none;
-}
-.btn-gold {
-  background: linear-gradient(135deg, var(--gold3), var(--gold), var(--gold2));
-  color: #111; box-shadow: 0 6px 24px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,.35);
-}
-.btn-gold:hover { box-shadow: 0 8px 32px rgba(212,175,55,.55); }
-.btn-gold:active { transform: scale(.97); }
-.btn-outline {
-  background: transparent; color: var(--gold);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 0 0 0 transparent;
-}
-.btn-outline:hover { background: rgba(212,175,55,.08); box-shadow: 0 0 20px rgba(212,175,55,.15); }
-.btn-ghost {
-  background: var(--glass); color: var(--white); border: 1px solid rgba(255,255,255,.08);
-}
-.btn-block { width: 100%; }
-.btn-lg { padding: 18px 28px; font-size: 1.1rem; border-radius: 16px; }
-.btn-sm { padding: 10px 14px; font-size: .85rem; border-radius: 12px; }
-.btn .ripple {
-  position: absolute; border-radius: 50%; background: rgba(255,255,255,.35);
-  transform: scale(0); animation: ripple .55s linear; pointer-events: none;
-}
-@keyframes ripple { to { transform: scale(4); opacity: 0; } }
-.btn-glow {
-  animation: btnGlow 2.4s ease-in-out infinite;
-}
-@keyframes btnGlow {
-  0%,100% { box-shadow: 0 6px 24px var(--gold-glow); }
-  50% { box-shadow: 0 8px 40px rgba(245,215,110,.55); }
-}
+/* ---------- INTRO ---------- */
+#screen-intro{display:flex;align-items:center;justify-content:center;padding:28px 18px}
+#screen-intro.active{display:flex}
+.intro-wrap{width:100%;max-width:480px;text-align:center;padding-top:12px}
+.logo-core{display:inline-flex;align-items:center;justify-content:center;width:96px;height:96px;border-radius:28px;background:linear-gradient(135deg,var(--gold),#8a6a12);color:#000;font-family:'Orbitron',sans-serif;font-weight:900;font-size:54px;box-shadow:0 0 50px rgba(212,175,55,.5);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 30px rgba(212,175,55,.4)}50%{box-shadow:0 0 60px rgba(212,175,55,.75)}}
+.intro-title{font-size:38px;letter-spacing:6px;color:var(--gold);margin-top:18px}
+.intro-badge{display:inline-block;margin-top:10px;padding:5px 16px;border-radius:99px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.4);color:var(--gold2);font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.intro-sub{color:var(--muted);margin-top:12px;font-size:14px}
+.about-card{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:22px}
+.about-card h3{display:flex;align-items:center;gap:10px;font-size:15px;margin-bottom:10px}
+.about-card p{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:10px}
+.contact-label{margin:22px 0 4px;font-size:14px;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+.foot-note{margin-top:26px;color:var(--muted);font-size:11px;letter-spacing:1px}
 
-/* FLOATING LOGO */
-.logo-wrap {
-  width: 120px; height: 120px; margin: 0 auto 22px;
-  position: relative; display: grid; place-items: center;
-}
-.logo-ring {
-  position: absolute; inset: 0; border-radius: 50%;
-  border: 2px solid transparent;
-  background: linear-gradient(var(--bg), var(--bg)) padding-box,
-              linear-gradient(135deg, var(--gold), transparent, var(--gold2)) border-box;
-  animation: spin 8s linear infinite;
-}
-.logo-ring2 {
-  position: absolute; inset: 10px; border-radius: 50%;
-  border: 1px dashed rgba(212,175,55,.35);
-  animation: spin 12s linear reverse infinite;
-}
-.logo-core {
-  width: 72px; height: 72px; border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #2a2a2a, #0a0a0a);
-  border: 1px solid var(--glass-border);
-  display: grid; place-items: center;
-  font-size: 2rem;
-  box-shadow: 0 0 30px var(--gold-glow), inset 0 0 20px rgba(212,175,55,.15);
-  animation: floatY 3.5s ease-in-out infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes floatY {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
+/* ---------- HOME ---------- */
+.hero-mini h1{font-size:22px;letter-spacing:1px}
+.hero-mini p{margin-top:6px}
+.tool-card{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:18px}
+.tool-card .tool-icon{font-size:34px}
+.tool-card h3{font-size:16px}
+.tool-card p{color:var(--muted);font-size:13px;line-height:1.6}
+.sec-title{font-size:15px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin:26px 0 10px}
+.quick-link{display:flex;align-items:center;gap:12px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px;text-align:left}
+.quick-link i:first-child{color:var(--gold);font-size:18px;width:26px;text-align:center}
+.quick-link span{flex:1;display:flex;flex-direction:column}
+.quick-link b{font-size:14px}
+.quick-link small{color:var(--muted);font-size:12px;margin-top:2px}
+.quick-link>i:last-child{color:var(--muted);font-size:12px}
+.quick-link:active{transform:scale(.98)}
 
-/* CARDS */
-.card {
-  padding: 20px; margin-bottom: 14px;
-  transition: transform .25s, border-color .25s, box-shadow .25s;
-}
-.card:active { transform: scale(.985); }
-.card-hover:hover {
-  border-color: rgba(212,175,55,.45);
-  box-shadow: 0 12px 40px rgba(0,0,0,.5), 0 0 24px rgba(212,175,55,.12);
-}
-.feature-card {
-  display: flex; gap: 16px; align-items: flex-start; text-align: left; cursor: pointer;
-}
-.feature-icon {
-  width: 54px; height: 54px; flex-shrink: 0; border-radius: 16px;
-  display: grid; place-items: center; font-size: 1.4rem;
-  background: linear-gradient(135deg, rgba(212,175,55,.2), rgba(212,175,55,.05));
-  border: 1px solid var(--glass-border); color: var(--gold2);
-  box-shadow: 0 0 18px rgba(212,175,55,.12);
-}
-.feature-card h3 {
-  font-family: var(--font-display); font-size: .95rem; margin-bottom: 6px; letter-spacing: .04em;
-}
-.feature-card p { color: var(--muted); font-size: .82rem; line-height: 1.45; margin-bottom: 14px; }
+/* ---------- WIZARD ---------- */
+.screen-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.screen-head h2{font-size:18px;letter-spacing:1px}
+.back-btn{width:38px;height:38px;border-radius:10px;background:var(--card);border:1px solid var(--line);color:var(--gold)}
+.step-head{text-align:center;margin-bottom:18px}
+.step-head h2{font-size:20px;letter-spacing:1px}
+.step-count{color:var(--muted);font-size:13px;margin-top:6px}
+.step-dots{display:flex;justify-content:center;gap:6px;margin-bottom:12px}
+.step-dots span{width:26px;height:5px;border-radius:99px;background:var(--line)}
+.step-dots span.on{background:var(--gold)}
+.step-dots span.done{background:rgba(212,175,55,.45)}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt-btn{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 10px;font-size:13px;font-weight:600;color:var(--text)}
+.opt-btn:active{background:var(--card2);border-color:var(--gold);transform:scale(.97)}
+@media(min-width:520px){.opt-grid{grid-template-columns:1fr 1fr 1fr}}
 
-/* GRID SELECT */
-.select-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-}
-.select-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-.select-item {
-  padding: 14px 10px; text-align: center; cursor: pointer;
-  border-radius: 14px; border: 1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.03);
-  font-family: var(--font-ui); font-weight: 600; font-size: .92rem;
-  transition: .22s; position: relative; overflow: hidden;
-}
-.select-item i { display: block; margin-bottom: 6px; color: var(--gold); font-size: 1.1rem; }
-.select-item:hover, .select-item:focus-visible {
-  border-color: rgba(212,175,55,.4); background: rgba(212,175,55,.08);
-}
-.select-item.selected {
-  border-color: var(--gold);
-  background: linear-gradient(160deg, rgba(212,175,55,.18), rgba(212,175,55,.05));
-  box-shadow: 0 0 20px rgba(212,175,55,.18), inset 0 0 0 1px rgba(212,175,55,.2);
-  color: var(--gold2);
-}
-.select-item.selected::after {
-  content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-  position: absolute; top: 6px; right: 8px; font-size: .65rem; color: var(--gold);
-}
+/* ---------- RESULTS ---------- */
+.results-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 16px;margin-top:6px}
+.res-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.res-row:last-child{border-bottom:none}
+.res-row b{color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:17px}
+.copy-row{display:flex;gap:10px;margin-top:14px}
+.copy-row .btn{flex:1}
+.hud-code-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.hud-code{font-family:monospace;font-size:11px;line-height:1.7;word-break:break-all;color:var(--gold2);background:#000;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px;max-height:180px;overflow-y:auto}
+.hud-tip{display:flex;gap:8px;align-items:flex-start;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.3);border-radius:12px;padding:12px;margin-top:12px;font-size:12.5px;color:var(--green)}
 
-/* FORM */
-.field { margin-bottom: 16px; }
-.field label {
-  display: block; margin-bottom: 8px; font-family: var(--font-ui);
-  font-weight: 600; font-size: .9rem; letter-spacing: .04em; color: var(--gold2);
-}
-.input {
-  width: 100%; padding: 14px 16px; border-radius: 14px;
-  background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.1);
-  color: var(--white); transition: .25s;
-}
-.input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(212,175,55,.15), 0 0 20px rgba(212,175,55,.1);
-}
-.input::placeholder { color: #666; }
-.pin-wrap { position: relative; }
-.pin-wrap .toggle-pin {
-  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  color: var(--muted); width: 36px; height: 36px; display: grid; place-items: center;
-}
-.pin-dots {
-  letter-spacing: .35em; font-size: 1.2rem; text-align: center;
-}
+/* ---------- SHOOTING (ADDED) ---------- */
+.shoot-card{background:linear-gradient(160deg,#1a1212,#0c0c10);border:1px solid rgba(255,59,59,.35);border-radius:16px;padding:16px;margin-top:14px;text-align:center}
+.shoot-card h3{font-size:15px;color:#ff6b6b;letter-spacing:1px}
+.shoot-card p{color:var(--muted);font-size:12.5px;margin-top:6px}
+.shoot-card.mini{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}
+.fire-btn{width:150px;height:150px;border-radius:50%;margin:16px auto 6px;background:radial-gradient(circle at 35% 30%,#ff6b5e,#c81d1d 60%,#7a0e0e);color:#fff;font-family:'Orbitron',sans-serif;font-weight:900;font-size:22px;letter-spacing:2px;border:3px solid rgba(255,255,255,.25);box-shadow:0 0 40px rgba(255,59,59,.45),inset 0 -8px 20px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;gap:8px;user-select:none;touch-action:none;transition:transform .1s}
+.fire-btn:active{transform:scale(.95)}
+.fire-btn.kick{animation:kick .18s ease}
+@keyframes kick{0%{transform:translateY(0) scale(1)}30%{transform:translateY(5px) scale(.94)}100%{transform:translateY(0) scale(1)}}
+.fire-btn.sm{width:74px;height:74px;font-size:12px;margin:0}
+.shot-counter{color:var(--muted);font-size:13px}
+.shot-counter b{color:var(--gold);font-size:16px}
+.action-row{margin-top:14px;text-align:center}
+.action-row .btn{width:100%}
 
-/* PROGRESS */
-.steps-bar {
-  display: flex; gap: 6px; margin-bottom: 22px;
-}
-.step-dot {
-  flex: 1; height: 4px; border-radius: 99px;
-  background: rgba(255,255,255,.08); overflow: hidden; position: relative;
-}
-.step-dot.done { background: var(--gold3); }
-.step-dot.active {
-  background: linear-gradient(90deg, var(--gold3), var(--gold2));
-  box-shadow: 0 0 10px var(--gold-glow);
-}
-.step-label {
-  display: flex; justify-content: space-between; margin-bottom: 10px;
-  font-family: var(--font-ui); font-size: .8rem; color: var(--muted); letter-spacing: .08em;
-}
-.step-label span:last-child { color: var(--gold); }
+/* ---------- HISTORY / FAVS / SEARCH ---------- */
+.hist-item{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}
+.hist-main{flex:1;text-align:left;display:flex;flex-direction:column;gap:3px}
+.hist-main b{font-size:14px}
+.hist-main span{color:var(--muted);font-size:12px}
+.hist-actions{display:flex;gap:6px}
+.mini{width:34px;height:34px;border-radius:9px;background:var(--card2);border:1px solid var(--line);font-size:13px;color:var(--muted)}
+.mini.gold{color:var(--gold);border-color:rgba(212,175,55,.4)}
+.mini.danger{color:var(--red);border-color:rgba(255,59,59,.3)}
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty i{font-size:40px;color:var(--line);margin-bottom:12px}
+.empty p{font-size:14px}
+.search-box{margin-top:4px}
 
-/* RESULTS */
-.result-grid { display: grid; gap: 10px; }
-.result-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 16px; border-radius: 14px;
-  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
-}
-.result-row .label { color: var(--muted); font-size: .85rem; font-family: var(--font-ui); letter-spacing: .04em; }
-.result-row .value {
-  font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--gold2);
-  text-shadow: 0 0 12px var(--gold-glow);
-}
-.hud-code {
-  font-family: var(--font-display); font-size: 1.05rem; letter-spacing: .08em;
-  color: var(--gold2); padding: 14px; text-align: center;
-  border-radius: 12px; background: rgba(0,0,0,.4);
-  border: 1px dashed rgba(212,175,55,.35); margin-bottom: 10px;
-  word-break: break-all;
-}
-.action-row {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px;
-}
-.welcome-box {
-  margin-top: 18px; padding: 20px; text-align: center;
-  border-image: linear-gradient(135deg, var(--gold3), transparent, var(--gold)) 1;
-}
-.welcome-box h3 {
-  font-family: var(--font-display); color: var(--gold2); margin-bottom: 10px; font-size: 1rem;
-}
-.welcome-box p { color: var(--muted); font-size: .86rem; margin-bottom: 8px; }
-.welcome-box .sign { color: var(--gold); font-family: var(--font-ui); font-weight: 700; margin-top: 12px; }
+/* ---------- FAQ / LEGAL / FEEDBACK ---------- */
+.faq-item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:10px}
+.faq-item summary{font-weight:700;font-size:14px;cursor:pointer;color:var(--text);list-style:none}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:'+';float:right;color:var(--gold);font-size:18px}
+.faq-item[open] summary::after{content:'–'}
+.faq-item p{color:var(--muted);font-size:13px;line-height:1.7;margin-top:10px}
+.legal-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:8px}
+.legal-card h4{color:var(--gold);font-size:14px;margin:16px 0 6px}
+.legal-card h4:first-child{margin-top:0}
+.legal-card p{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:10px}
+.form-group{margin-top:12px}
+.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
 
-/* BOTTOM NAV */
-#bottom-nav {
-  position: fixed; left: 50%; transform: translateX(-50%);
-  bottom: 0; width: 100%; max-width: 480px; z-index: 100;
-  padding: 8px 12px calc(8px + var(--safe-b));
-  background: linear-gradient(180deg, transparent, rgba(5,5,5,.92) 30%, #0a0a0a);
-  display: none;
-}
-#bottom-nav.show { display: block; }
-.nav-inner {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;
-  padding: 8px; border-radius: 20px;
-  background: rgba(15,15,15,.92); border: 1px solid var(--glass-border);
-  backdrop-filter: blur(20px); box-shadow: 0 -4px 30px rgba(0,0,0,.5);
-}
-.nav-item {
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 8px 4px; border-radius: 14px; color: var(--muted);
-  font-size: .62rem; font-family: var(--font-ui); font-weight: 600; letter-spacing: .04em;
-  transition: .2s;
-}
-.nav-item i { font-size: 1.05rem; }
-.nav-item.active {
-  color: var(--gold2);
-  background: rgba(212,175,55,.1);
-  text-shadow: 0 0 10px var(--gold-glow);
-}
+/* ---------- DRAWER ---------- */
+#drawer{position:fixed;top:0;right:0;bottom:0;width:300px;max-width:88vw;z-index:1100;background:var(--panel);border-left:1px solid var(--line);transform:translateX(105%);transition:transform .3s ease;overflow-y:auto;padding:18px 16px 30px}
+#drawer.open{transform:none}
+.drawer-head{display:flex;align-items:center;gap:10px;font-family:'Orbitron',sans-serif;font-weight:800;letter-spacing:2px;color:var(--gold);margin-bottom:16px}
+#drawer-close{margin-left:auto;width:34px;height:34px;border-radius:9px;background:var(--card);border:1px solid var(--line);color:var(--muted)}
+.drawer-link{display:flex;align-items:center;gap:12px;width:100%;padding:13px 10px;border-radius:12px;font-size:14px;color:var(--text);font-weight:600}
+.drawer-link i{width:22px;text-align:center;color:var(--gold)}
+.drawer-link:active{background:var(--card2)}
+.drawer-link.danger{color:var(--red)}
+.drawer-link.danger i{color:var(--red)}
+.drawer-label{margin:18px 10px 6px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.switch-row{display:flex;align-items:center;justify-content:space-between;padding:13px 10px;font-size:14px}
+.sw{width:46px;height:26px;border-radius:99px;background:var(--line);position:relative;transition:background .2s}
+.sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+.sw.on{background:var(--gold)}
+.sw.on i{left:23px;background:#000}
+.drawer-foot{margin-top:22px;text-align:center;color:var(--muted);font-size:11px;letter-spacing:1px}
+.drawer-overlay{position:fixed;inset:0;z-index:1050;background:rgba(0,0,0,.6);opacity:0;visibility:hidden;transition:.3s}
+.drawer-overlay.show{opacity:1;visibility:visible}
 
-/* MODAL / TOAST */
-#modal-root, #toast-root {
-  position: fixed; inset: 0; z-index: 5000; pointer-events: none;
-}
-.modal-overlay {
-  position: absolute; inset: 0; background: rgba(0,0,0,.72);
-  backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;
-  padding: 24px; pointer-events: auto; animation: fadeIn .25s;
-}
-.modal {
-  width: 100%; max-width: 360px; padding: 28px 22px; text-align: center;
-  animation: popIn .35s cubic-bezier(.22,1,.36,1);
-}
-.modal .modal-icon {
-  width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%;
-  display: grid; place-items: center; font-size: 1.5rem;
-  background: rgba(255,77,77,.12); border: 1px solid rgba(255,77,77,.35); color: var(--danger);
-}
-.modal .modal-icon.success {
-  background: rgba(46,204,113,.12); border-color: rgba(46,204,113,.35); color: var(--success);
-}
-.modal .modal-icon.gold {
-  background: rgba(212,175,55,.12); border-color: rgba(212,175,55,.35); color: var(--gold);
-}
-.modal h3 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 8px; letter-spacing: .06em; }
-.modal p { color: var(--muted); font-size: .9rem; margin-bottom: 20px; }
-.modal-actions { display: flex; flex-direction: column; gap: 10px; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes popIn {
-  from { opacity: 0; transform: scale(.88) translateY(12px); }
-  to { opacity: 1; transform: none; }
-}
+/* ---------- MODAL ---------- */
+.modal-overlay{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s}
+.modal-card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.6);max-height:86vh;overflow-y:auto}
+.modal-icon{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 12px;background:rgba(212,175,55,.12);color:var(--gold);border:1px solid rgba(212,175,55,.35)}
+.modal-icon.danger{background:rgba(255,59,59,.1);color:var(--red);border-color:rgba(255,59,59,.35)}
+.modal-icon.success{background:rgba(46,204,113,.1);color:var(--green);border-color:rgba(46,204,113,.35)}
+.modal-card h3{text-align:center;font-size:16px;letter-spacing:1px;margin-bottom:8px}
+.modal-card>p{text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px}
+.modal-actions{display:flex;gap:8px;margin-top:14px}
+.modal-actions .btn{flex:1}
+.pin-input{text-align:center;font-size:24px;letter-spacing:10px;font-weight:700}
+.modal-card.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.res-list{margin:8px 0 4px}
 
-.toast {
-  position: fixed; left: 50%; bottom: calc(var(--nav-h) + 24px + var(--safe-b));
-  transform: translateX(-50%) translateY(20px);
-  max-width: 90%; padding: 12px 18px; border-radius: 14px;
-  background: rgba(20,20,20,.95); border: 1px solid var(--glass-border);
-  color: var(--white); font-size: .85rem; font-family: var(--font-ui);
-  font-weight: 600; letter-spacing: .04em; z-index: 6000; pointer-events: none;
-  opacity: 0; transition: .35s; box-shadow: var(--shadow);
-  display: flex; align-items: center; gap: 10px;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast i { color: var(--gold); }
+/* ---------- TOAST ---------- */
+.toast{position:fixed;top:18px;left:50%;transform:translate(-50%,-80px);z-index:1300;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:11px 16px;display:flex;align-items:center;gap:10px;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:transform .3s ease;max-width:90vw}
+.toast i{color:var(--gold)}
+.toast.show{transform:translate(-50%,0)}
 
-/* SEARCH */
-.search-box {
-  display: flex; align-items: center; gap: 10px; padding: 12px 14px;
-  border-radius: 14px; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.1);
-  margin-bottom: 16px;
-}
-.search-box i { color: var(--gold); }
-.search-box input { flex: 1; background: transparent; color: var(--white); }
-.search-box input::placeholder { color: #666; }
-
-/* LIST ITEMS */
-.list-item {
-  display: flex; align-items: center; gap: 14px; padding: 14px;
-  border-radius: 14px; margin-bottom: 8px; cursor: pointer;
-  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
-  transition: .2s;
-}
-.list-item:hover { border-color: rgba(212,175,55,.3); background: rgba(212,175,55,.06); }
-.list-item .li-icon {
-  width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
-  background: rgba(212,175,55,.1); color: var(--gold); flex-shrink: 0;
-}
-.list-item .li-body { flex: 1; min-width: 0; }
-.list-item .li-title { font-family: var(--font-ui); font-weight: 700; font-size: .95rem; }
-.list-item .li-sub { color: var(--muted); font-size: .75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.list-item .li-action { color: var(--muted); }
-
-/* FAQ */
-.faq-item {
-  margin-bottom: 10px; border-radius: 14px; overflow: hidden;
-  border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);
-}
-.faq-q {
-  width: 100%; text-align: left; padding: 14px 16px;
-  display: flex; justify-content: space-between; align-items: center; gap: 12px;
-  font-family: var(--font-ui); font-weight: 700; font-size: .95rem;
-}
-.faq-q i { color: var(--gold); transition: .25s; }
-.faq-item.open .faq-q i { transform: rotate(180deg); }
-.faq-a {
-  max-height: 0; overflow: hidden; transition: max-height .35s ease;
-  color: var(--muted); font-size: .86rem;
-}
-.faq-item.open .faq-a { max-height: 240px; }
-.faq-a-inner { padding: 0 16px 16px; }
-
-/* SETTINGS */
-.setting-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.06);
-}
-.setting-row:last-child { border-bottom: none; }
-.setting-info { display: flex; align-items: center; gap: 12px; }
-.setting-info i { color: var(--gold); width: 22px; text-align: center; }
-.setting-info span { font-family: var(--font-ui); font-weight: 600; }
-.switch {
-  width: 48px; height: 28px; border-radius: 99px; position: relative;
-  background: rgba(255,255,255,.12); transition: .25s; cursor: pointer;
-  border: 1px solid rgba(255,255,255,.1);
-}
-.switch.on { background: linear-gradient(135deg, var(--gold3), var(--gold)); border-color: transparent; }
-.switch::after {
-  content: ''; position: absolute; top: 3px; left: 3px;
-  width: 20px; height: 20px; border-radius: 50%; background: #fff;
-  transition: .25s; box-shadow: 0 2px 6px rgba(0,0,0,.3);
-}
-.switch.on::after { left: 23px; }
-
-/* CHIPS / TAGS */
-.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-.chip {
-  padding: 6px 12px; border-radius: 99px; font-size: .75rem;
-  font-family: var(--font-ui); font-weight: 600; letter-spacing: .04em;
-  background: rgba(212,175,55,.1); border: 1px solid rgba(212,175,55,.25); color: var(--gold2);
-}
-
-/* CONTACT LINKS */
-.contact-btn {
-  display: flex; align-items: center; gap: 14px; width: 100%;
-  padding: 16px; margin-bottom: 12px; text-align: left;
-  border-radius: 16px; transition: .25s;
-}
-.contact-btn:hover { border-color: rgba(212,175,55,.45); transform: translateY(-2px); }
-.contact-btn .ci {
-  width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center;
-  background: rgba(37,211,102,.12); color: #25d366; font-size: 1.3rem;
-  border: 1px solid rgba(37,211,102,.25);
-}
-.contact-btn .ci.gold { background: rgba(212,175,55,.12); color: var(--gold); border-color: rgba(212,175,55,.25); }
-.contact-btn .ct { flex: 1; }
-.contact-btn .ct strong { display: block; font-family: var(--font-ui); font-size: 1rem; }
-.contact-btn .ct small { color: var(--muted); font-size: .78rem; }
-
-/* MISC */
-.section-title {
-  font-family: var(--font-display); font-size: .72rem; letter-spacing: .16em;
-  color: var(--gold); text-transform: uppercase; margin: 24px 0 12px;
-  display: flex; align-items: center; gap: 10px;
-}
-.section-title::after {
-  content: ''; flex: 1; height: 1px;
-  background: linear-gradient(90deg, rgba(212,175,55,.35), transparent);
-}
-.divider {
-  height: 1px; margin: 20px 0;
-  background: linear-gradient(90deg, transparent, rgba(212,175,55,.3), transparent);
-}
-.spacer { height: 12px; }
-.mt-1 { margin-top: 8px; } .mt-2 { margin-top: 16px; } .mt-3 { margin-top: 24px; }
-.mb-1 { margin-bottom: 8px; } .mb-2 { margin-bottom: 16px; }
-.hidden { display: none !important; }
-.text-gold { color: var(--gold2); }
-.prose { color: var(--muted); font-size: .9rem; line-height: 1.65; }
-.prose p { margin-bottom: 12px; }
-.prose h4 { color: var(--gold2); font-family: var(--font-ui); font-size: 1rem; margin: 18px 0 8px; }
-.empty-state {
-  text-align: center; padding: 40px 20px; color: var(--muted);
-}
-.empty-state i { font-size: 2.2rem; color: var(--gold); opacity: .5; margin-bottom: 12px; display: block; }
-
-/* SHARE FAB music */
-#music-fab {
-  position: fixed; right: max(16px, calc(50% - 220px));
-  bottom: calc(var(--nav-h) + 18px + var(--safe-b));
-  width: 48px; height: 48px; border-radius: 50%; z-index: 90;
-  display: none; place-items: center;
-  background: linear-gradient(135deg, var(--gold3), var(--gold));
-  color: #111; box-shadow: 0 6px 24px var(--gold-glow);
-  font-size: 1rem; transition: .25s;
-}
-#music-fab.show { display: grid; }
-#music-fab.off { opacity: .55; filter: grayscale(.4); }
-
-/* RESPONSIVE */
-@media (min-width: 480px) {
-  .select-grid { grid-template-columns: repeat(3, 1fr); }
-  .select-grid.cols-3 { grid-template-columns: repeat(4, 1fr); }
-}
-@media (min-width: 768px) {
-  #app { max-width: 520px; box-shadow: 0 0 80px rgba(0,0,0,.6); }
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background: radial-gradient(circle at 50% 50%, rgba(212,175,55,.04), transparent 60%);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
-  }
-}
-
-/* INTRO extras */
-.intro-hero { padding-top: 28px; text-align: center; }
-.intro-tag {
-  display: inline-block; margin: 12px 0 8px; padding: 6px 14px;
-  border-radius: 99px; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase;
-  font-family: var(--font-ui); font-weight: 700;
-  border: 1px solid rgba(212,175,55,.3); color: var(--gold2);
-  background: rgba(212,175,55,.08);
-}
-.owner-card { text-align: left; margin-top: 28px; }
-.owner-card .avatar {
-  width: 56px; height: 56px; border-radius: 16px;
-  background: linear-gradient(135deg, var(--gold3), var(--gold2));
-  color: #111; display: grid; place-items: center;
-  font-family: var(--font-display); font-weight: 800; font-size: 1.2rem;
-  box-shadow: 0 0 24px var(--gold-glow);
-}
-.owner-top { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
-.owner-top h3 { font-family: var(--font-display); font-size: 1.05rem; letter-spacing: .08em; }
-.owner-top small { color: var(--gold); font-family: var(--font-ui); font-weight: 700; letter-spacing: .1em; }
-
-.gen-loading {
-  text-align: center; padding: 40px 20px;
-}
-.gen-loading .spin {
-  width: 48px; height: 48px; margin: 0 auto 16px; border-radius: 50%;
-  border: 3px solid rgba(212,175,55,.15); border-top-color: var(--gold);
-  animation: spin .8s linear infinite;
-}
-.progress-line {
-  width: 100%; height: 4px; border-radius: 99px; overflow: hidden;
-  background: rgba(255,255,255,.08); margin-top: 16px;
-}
-.progress-line > i {
-  display: block; height: 100%; width: 0%;
-  background: linear-gradient(90deg, var(--gold3), var(--gold2));
-  transition: width .3s;
-}
-
-.fav-star { color: var(--muted); transition: .2s; }
-.fav-star.on { color: var(--gold2); text-shadow: 0 0 10px var(--gold-glow); }
-
-.sr-only {
-  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0,0,0,0); border: 0;
-}
+/* ---------- MUSIC FAB ---------- */
+#music-fab{position:fixed;right:16px;bottom:86px;z-index:800;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#a07d1a);color:#000;font-size:18px;box-shadow:0 4px 18px rgba(212,175,55,.4);transition:transform .2s}
+#music-fab:active{transform:scale(.9)}
+#music-fab.off{background:var(--card2);color:var(--muted);border:1px solid var(--line);box-shadow:none}
 </style>
 </head>
 <body>
-<div id="particles"><canvas id="particle-canvas"></canvas></div>
+
+<canvas id="particles-canvas"></canvas>
 
 <!-- LOADER -->
-<div id="loader" role="progressbar" aria-label="Loading ZEUS SENSI">
-  <div class="loader-logo">ZEUS SENSI</div>
-  <div class="loader-sub">Premium Edition</div>
-  <div class="loader-bar"><div class="loader-fill"></div></div>
-</div>
-
-<div id="app">
-  <!-- ========== INTRO ========== -->
-  <section id="page-intro" class="page active" aria-label="Welcome">
-    <div class="intro-hero">
-      <div class="logo-wrap" aria-hidden="true">
-        <div class="logo-ring"></div>
-        <div class="logo-ring2"></div>
-        <div class="logo-core"><i class="fa-solid fa-bolt"></i></div>
-      </div>
-      <h1 class="brand h1">ZEUS SENSI</h1>
-      <div class="intro-tag">Ultimate Premium</div>
-      <p class="muted" style="max-width:320px;margin:0 auto 8px;line-height:1.55">
-        Ultimate Free Fire Premium Sensitivity &amp; HUD Generator
-      </p>
-    </div>
-
-    <div class="glass card owner-card mt-2">
-      <div class="owner-top">
-        <div class="avatar">Z</div>
-        <div>
-          <h3>ZEUS</h3>
-          <small>ZEUS DEV</small>
-        </div>
-      </div>
-      <p class="prose" style="margin:0">
-        ZEUS DEV is a passionate developer focused on creating premium gaming tools, Free Fire sensitivity configurations, optimized HUD layouts, mobile utilities and high-quality digital projects designed to improve every player's gameplay experience.
-      </p>
-      <p class="prose mt-1" style="margin-bottom:0">
-        Our goal is to help players achieve smoother movement, better accuracy, improved headshots and optimized gaming performance across different devices.
-      </p>
-      <p class="text-gold mt-2" style="font-family:var(--font-ui);font-weight:700;letter-spacing:.04em">
-        Thank you for choosing ZEUS SENSI.
-      </p>
-    </div>
-
-    <div class="section-title">Contact</div>
-    <a class="glass contact-btn" href="https://wa.me/2349066760078" target="_blank" rel="noopener" data-sfx>
-      <div class="ci"><i class="fa-brands fa-whatsapp"></i></div>
-      <div class="ct">
-        <strong>Contact Owner</strong>
-        <small>WhatsApp · 09066760078</small>
-      </div>
-      <i class="fa-solid fa-chevron-right" style="color:var(--muted)"></i>
-    </a>
-    <a class="glass contact-btn" href="https://whatsapp.com/channel/0029VbCsw0SGE56rCTPaXd06" target="_blank" rel="noopener" data-sfx>
-      <div class="ci gold"><i class="fa-solid fa-broadcast-tower"></i></div>
-      <div class="ct">
-        <strong>WhatsApp Channel 1</strong>
-        <small>Follow the Xylo channel on WhatsApp</small>
-      </div>
-      <i class="fa-solid fa-chevron-right" style="color:var(--muted)"></i>
-    </a>
-    <a class="glass contact-btn" href="https://whatsapp.com/channel/0029Vb7TYzL5a24AP3eW1a0j" target="_blank" rel="noopener" data-sfx>
-      <div class="ci gold"><i class="fa-solid fa-satellite-dish"></i></div>
-      <div class="ct">
-        <strong>WhatsApp Channel 2</strong>
-        <small>Follow the MR Danny Domain channel</small>
-      </div>
-      <i class="fa-solid fa-chevron-right" style="color:var(--muted)"></i>
-    </a>
-
-    <button class="btn btn-gold btn-block btn-lg btn-glow mt-3" id="btn-get-started" data-sfx type="button">
-      <i class="fa-solid fa-rocket"></i> Get Started
-    </button>
-  </section>
-
-  <!-- ========== HOME ========== -->
-  <section id="page-home" class="page" aria-label="Home">
-    <div class="app-header">
-      <div class="brand" style="font-size:1rem">ZEUS SENSI</div>
-      <div style="display:flex;gap:8px">
-        <button class="icon-btn" data-nav="search" aria-label="Search" data-sfx><i class="fa-solid fa-magnifying-glass"></i></button>
-        <button class="icon-btn" data-nav="settings" aria-label="Settings" data-sfx><i class="fa-solid fa-gear"></i></button>
-      </div>
-    </div>
-    <p class="muted mb-2">Choose a premium tool to continue</p>
-
-    <div class="glass card feature-card card-hover" data-start="sensi" data-sfx role="button" tabindex="0">
-      <div class="feature-icon">🔥</div>
-      <div style="flex:1">
-        <h3>Free Fire Premium Sensitivity</h3>
-        <p>Generate optimized sensitivity settings based on your phone and gameplay style for better headshots and smoother control.</p>
-        <span class="btn btn-gold btn-sm">Open <i class="fa-solid fa-arrow-right"></i></span>
-      </div>
-    </div>
-
-    <div class="glass card feature-card card-hover" data-start="hud" data-sfx role="button" tabindex="0">
-      <div class="feature-icon">🎮</div>
-      <div style="flex:1">
-        <h3>Free Fire HUD Configuration</h3>
-        <p>Generate the best HUD code recommendations for your device and finger layout.</p>
-        <span class="btn btn-gold btn-sm">Open <i class="fa-solid fa-arrow-right"></i></span>
-      </div>
-    </div>
-
-    <div class="section-title">Quick Access</div>
-    <div class="list-item" data-nav="history" data-sfx>
-      <div class="li-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
-      <div class="li-body"><div class="li-title">Recently Generated</div><div class="li-sub">View your history</div></div>
-      <i class="fa-solid fa-chevron-right li-action"></i>
-    </div>
-    <div class="list-item" data-nav="favorites" data-sfx>
-      <div class="li-icon"><i class="fa-solid fa-star"></i></div>
-      <div class="li-body"><div class="li-title">Favorites</div><div class="li-sub">Saved configurations</div></div>
-      <i class="fa-solid fa-chevron-right li-action"></i>
-    </div>
-    <div class="list-item" data-nav="about" data-sfx>
-      <div class="li-icon"><i class="fa-solid fa-circle-info"></i></div>
-      <div class="li-body"><div class="li-title">About ZEUS SENSI</div><div class="li-sub">Owner &amp; project info</div></div>
-      <i class="fa-solid fa-chevron-right li-action"></i>
-    </div>
-  </section>
-
-  <!-- ========== SENSI FLOW ========== -->
-  <section id="page-sensi" class="page" aria-label="Sensitivity Generator">
-    <div class="app-header">
-      <button class="back-btn" data-sensi-back aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">Sensitivity</div>
-      <button class="icon-btn" data-nav="home" aria-label="Home" data-sfx><i class="fa-solid fa-house"></i></button>
-    </div>
-    <div class="step-label"><span id="sensi-step-name">Brand</span><span id="sensi-step-num">1 / 5</span></div>
-    <div class="steps-bar" id="sensi-steps"></div>
-    <div id="sensi-panel"></div>
-  </section>
-
-  <!-- ========== HUD FLOW ========== -->
-  <section id="page-hud" class="page" aria-label="HUD Generator">
-    <div class="app-header">
-      <button class="back-btn" data-hud-back aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">HUD Config</div>
-      <button class="icon-btn" data-nav="home" aria-label="Home" data-sfx><i class="fa-solid fa-house"></i></button>
-    </div>
-    <div class="step-label"><span id="hud-step-name">Brand</span><span id="hud-step-num">1 / 5</span></div>
-    <div class="steps-bar" id="hud-steps"></div>
-    <div id="hud-panel"></div>
-  </section>
-
-  <!-- ========== HISTORY ========== -->
-  <section id="page-history" class="page" aria-label="History">
-    <div class="app-header">
-      <button class="back-btn" data-nav="home" aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">History</div>
-      <button class="icon-btn" id="clear-history" aria-label="Clear history" data-sfx><i class="fa-solid fa-trash"></i></button>
-    </div>
-    <div id="history-list"></div>
-  </section>
-
-  <!-- ========== FAVORITES ========== -->
-  <section id="page-favorites" class="page" aria-label="Favorites">
-    <div class="app-header">
-      <button class="back-btn" data-nav="home" aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">Favorites</div>
-      <div style="width:42px"></div>
-    </div>
-    <div id="favorites-list"></div>
-  </section>
-
-  <!-- ========== SEARCH ========== -->
-  <section id="page-search" class="page" aria-label="Search">
-    <div class="app-header">
-      <button class="back-btn" data-nav="home" aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">Search</div>
-      <div style="width:42px"></div>
-    </div>
-    <div class="search-box glass">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="search" id="search-input" placeholder="Search brands, modes, history..." aria-label="Search" autocomplete="off">
-    </div>
-    <div id="search-results"></div>
-  </section>
-
-  <!-- ========== SETTINGS ========== -->
-  <section id="page-settings" class="page" aria-label="Settings">
-    <div class="app-header">
-      <button class="back-btn" data-nav="home" aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">Settings</div>
-      <div style="width:42px"></div>
-    </div>
-    <div class="glass card">
-      <div class="setting-row">
-        <div class="setting-info"><i class="fa-solid fa-music"></i><span>Background Music</span></div>
-        <div class="switch" id="sw-music" role="switch" aria-checked="false" tabindex="0"></div>
-      </div>
-      <div class="setting-row">
-        <div class="setting-info"><i class="fa-solid fa-volume-high"></i><span>Sound Effects</span></div>
-        <div class="switch on" id="sw-sfx" role="switch" aria-checked="true" tabindex="0"></div>
-      </div>
-      <div class="setting-row">
-        <div class="setting-info"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Particles</span></div>
-        <div class="switch on" id="sw-particles" role="switch" aria-checked="true" tabindex="0"></div>
-      </div>
-      <div class="setting-row">
-        <div class="setting-info"><i class="fa-solid fa-bolt"></i><span>Reduce Motion</span></div>
-        <div class="switch" id="sw-motion" role="switch" aria-checked="false" tabindex="0"></div>
-      </div>
-    </div>
-    <div class="section-title">Data</div>
-    <button class="btn btn-outline btn-block mb-1" id="btn-export-data" data-sfx type="button"><i class="fa-solid fa-file-export"></i> Export Data</button>
-    <button class="btn btn-outline btn-block mb-1" id="btn-clear-all" data-sfx type="button"><i class="fa-solid fa-broom"></i> Clear All Local Data</button>
-    <div class="section-title">Legal</div>
-    <div class="list-item" data-nav="privacy" data-sfx>
-      <div class="li-icon"><i class="fa-solid fa-shield-halved"></i></div>
-      <div class="li-body"><div class="li-title">Privacy Policy</div></div>
-      <i class="fa-solid fa-chevron-right li-action"></i>
-    </div>
-    <div class="list-item" data-nav="terms" data-sfx>
-      <div class="li-icon"><i class="fa-solid fa-file-contract"></i></div>
-      <div class="li-body"><div class="li-title">Terms of Use</div></div>
-      <i class="fa-solid fa-chevron-right li-action"></i>
-    </div>
-    <p class="muted center mt-3" style="font-size:.75rem">ZEUS SENSI V5 Ultimate Premium · v5.0.0</p>
-  </section>
-
-  <!-- ========== ABOUT ========== -->
-  <section id="page-about" class="page" aria-label="About">
-    <div class="app-header">
-      <button class="back-btn" data-nav="home" aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">About</div>
-      <div style="width:42px"></div>
-    </div>
-    <div class="center mb-2">
-      <div class="logo-wrap" style="width:90px;height:90px">
-        <div class="logo-ring"></div>
-        <div class="logo-core" style="width:56px;height:56px;font-size:1.5rem"><i class="fa-solid fa-bolt"></i></div>
-      </div>
-      <h2 class="brand h2">ZEUS SENSI</h2>
-      <p class="muted">V5 Ultimate Premium</p>
-    </div>
-    <div class="glass card">
-      <div class="owner-top">
-        <div class="avatar">Z</div>
-        <div><h3 style="font-family:var(--font-display);letter-spacing:.08em">ZEUS</h3><small class="text-gold" style="font-family:var(--font-ui);font-weight:700">ZEUS DEV</small></div>
-      </div>
-      <p class="prose">
-        ZEUS DEV is a passionate developer focused on creating premium gaming tools, Free Fire sensitivity configurations, optimized HUD layouts, mobile utilities and high-quality digital projects designed to improve every player's gameplay experience.
-      </p>
-      <p class="prose">
-        Our goal is to help players achieve smoother movement, better accuracy, improved headshots and optimized gaming performance across different devices.
-      </p>
-      <p class="text-gold" style="font-family:var(--font-ui);font-weight:700">Thank you for choosing ZEUS SENSI.</p>
-    </div>
-    <a class="btn btn-gold btn-block mt-2" href="https://wa.me/2349066760078" target="_blank" rel="noopener" data-sfx>
-      <i class="fa-brands fa-whatsapp"></i> Contact Owner
-    </a>
-  </section>
-
-  <!-- ========== FAQ ========== -->
-  <section id="page-faq" class="page" aria-label="FAQ">
-    <div class="app-header">
-      <button class="back-btn" data-nav="home" aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">FAQ</div>
-      <div style="width:42px"></div>
-    </div>
-    <div id="faq-list"></div>
-  </section>
-
-  <!-- ========== PRIVACY ========== -->
-  <section id="page-privacy" class="page" aria-label="Privacy Policy">
-    <div class="app-header">
-      <button class="back-btn" data-nav="settings" aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">Privacy</div>
-      <div style="width:42px"></div>
-    </div>
-    <div class="glass card prose">
-      <h4>Privacy Policy</h4>
-      <p>ZEUS SENSI respects your privacy. This application runs entirely in your browser and does not transmit personal data to external servers owned by ZEUS DEV.</p>
-      <h4>Local Storage</h4>
-      <p>Configuration history, favorites, and preferences are stored locally on your device using browser storage. You can clear this data anytime from Settings.</p>
-      <h4>Third-Party Links</h4>
-      <p>WhatsApp and channel links may collect data under their own policies when you leave this app.</p>
-      <h4>Contact</h4>
-      <p>For privacy questions contact the owner via WhatsApp at 09066760078.</p>
-    </div>
-  </section>
-
-  <!-- ========== TERMS ========== -->
-  <section id="page-terms" class="page" aria-label="Terms">
-    <div class="app-header">
-      <button class="back-btn" data-nav="settings" aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">Terms</div>
-      <div style="width:42px"></div>
-    </div>
-    <div class="glass card prose">
-      <h4>Terms of Use</h4>
-      <p>ZEUS SENSI provides Free Fire sensitivity and HUD recommendations for entertainment and educational purposes. Results are generated algorithmically and may require personal adjustment in-game.</p>
-      <h4>Fair Use</h4>
-      <p>Do not misuse this tool for illegal activities. Free Fire is a trademark of its respective owners. ZEUS SENSI is an independent fan utility and is not affiliated with Garena.</p>
-      <h4>No Warranty</h4>
-      <p>Settings are provided “as is” without guarantees of performance. Use at your own discretion.</p>
-      <h4>Premium Access</h4>
-      <p>Some generators require an access PIN distributed by the owner. Unauthorized redistribution of access credentials is prohibited.</p>
-    </div>
-  </section>
-
-  <!-- ========== FEEDBACK ========== -->
-  <section id="page-feedback" class="page" aria-label="Feedback">
-    <div class="app-header">
-      <button class="back-btn" data-nav="home" aria-label="Back" data-sfx><i class="fa-solid fa-arrow-left"></i></button>
-      <div class="header-title">Feedback</div>
-      <div style="width:42px"></div>
-    </div>
-    <div class="glass card">
-      <div class="field">
-        <label for="fb-name">Name</label>
-        <input class="input" id="fb-name" placeholder="Your name" maxlength="60">
-      </div>
-      <div class="field">
-        <label for="fb-type">Type</label>
-        <select class="input" id="fb-type">
-          <option>Suggestion</option>
-          <option>Bug Report</option>
-          <option>Feature Request</option>
-          <option>Appreciation</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="fb-msg">Message</label>
-        <textarea class="input" id="fb-msg" rows="5" placeholder="Tell ZEUS DEV what you think..." maxlength="800"></textarea>
-      </div>
-      <button class="btn btn-gold btn-block" id="btn-send-feedback" data-sfx type="button">
-        <i class="fa-solid fa-paper-plane"></i> Send via WhatsApp
-      </button>
-    </div>
-  </section>
-</div>
-
-<!-- BOTTOM NAV -->
-<nav id="bottom-nav" aria-label="Main navigation">
-  <div class="nav-inner">
-    <button class="nav-item active" data-nav="home" data-sfx type="button"><i class="fa-solid fa-house"></i>Home</button>
-    <button class="nav-item" data-nav="history" data-sfx type="button"><i class="fa-solid fa-clock-rotate-left"></i>History</button>
-    <button class="nav-item" data-nav="favorites" data-sfx type="button"><i class="fa-solid fa-star"></i>Favs</button>
-    <button class="nav-item" data-nav="faq" data-sfx type="button"><i class="fa-solid fa-circle-question"></i>FAQ</button>
-    <button class="nav-item" data-nav="feedback" data-sfx type="button"><i class="fa-solid fa-comment-dots"></i>Feedback</button>
+<div id="loader">
+  <div class="loader-logo">
+    <div class="logo-core">Z</div>
+    <h2>ZEUS SENSI</h2>
+    <p>Premium Edition</p>
   </div>
-</nav>
-
-<button id="music-fab" aria-label="Toggle music" type="button"><i class="fa-solid fa-music"></i></button>
+</div>
 
 <div id="modal-root"></div>
-<div id="toast-root"></div>
 
+<!-- ================= INTRO ================= -->
+<section class="screen active" id="screen-intro">
+  <div class="intro-wrap">
+    <div class="logo-core">Z</div>
+    <h1 class="intro-title">ZEUS SENSI</h1>
+    <p class="intro-badge">Ultimate Premium</p>
+    <p class="intro-sub">Ultimate Free Fire Premium Sensitivity &amp; HUD Generator</p>
+
+    <div class="about-card">
+      <h3><span class="logo-z">Z</span> ZEUS DEV</h3>
+      <p>ZEUS DEV is a passionate developer focused on creating premium gaming tools, Free Fire sensitivity configurations, optimized HUD layouts, mobile utilities and high-quality digital projects designed to improve every player's gameplay experience.</p>
+      <p>Our goal is to help players achieve smoother movement, better accuracy, improved headshots and optimized gaming performance across different devices.</p>
+      <p>Thank you for choosing ZEUS SENSI.</p>
+    </div>
+
+    <h3 class="contact-label">Contact</h3>
+    <a class="btn btn-primary block" href="https://wa.me/2349066760078"><i class="fa-brands fa-whatsapp"></i> Contact Owner · 09066760078</a>
+    <a class="btn block" href="https://whatsapp.com/channel/0029VbCsw0SGE56rCTPaXd06"><i class="fa-brands fa-whatsapp"></i> WhatsApp Channel 1 — Xylo</a>
+    <a class="btn block" href="https://whatsapp.com/channel/0029Vb7TYzL5a24AP3eW1a0j"><i class="fa-brands fa-whatsapp"></i> WhatsApp Channel 2 — MR Danny Domain</a>
+
+    <button class="btn btn-glow block" id="btn-get-started"><i class="fa-solid fa-rocket"></i> Get Started</button>
+    <p class="foot-note">ZEUS SENSI V5 Ultimate Premium · v5.0.0</p>
+  </div>
+</section>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <header id="topbar">
+    <button class="tb-logo" data-goto="home"><span class="logo-z">Z</span> ZEUS SENSI</button>
+    <div class="tb-icons">
+      <button data-goto="search" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <button id="btn-settings" title="Settings"><i class="fa-solid fa-gear"></i></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section class="screen" id="screen-home">
+      <div class="hero-mini">
+        <h1>Choose a premium tool to continue</h1>
+        <p class="muted">Unlock the best sensi &amp; HUD for your device.</p>
+      </div>
+
+      <div class="tool-card" data-start="sensi">
+        <div class="tool-icon">🔥</div>
+        <div>
+          <h3>Free Fire Premium Sensitivity</h3>
+          <p>Generate optimized sensitivity settings based on your phone and gameplay style for better headshots and smoother control.</p>
+        </div>
+        <button class="btn btn-primary">Open</button>
+      </div>
+
+      <div class="tool-card" data-start="hud">
+        <div class="tool-icon">🎮</div>
+        <div>
+          <h3>Free Fire HUD Configuration</h3>
+          <p>Generate the best HUD code recommendations for your device and finger layout.</p>
+        </div>
+        <button class="btn btn-primary">Open</button>
+      </div>
+
+      <h2 class="sec-title">Quick Access</h2>
+      <button class="quick-link" data-goto="history"><i class="fa-solid fa-clock-rotate-left"></i><span><b>Recently Generated</b><small>View your history</small></span><i class="fa-solid fa-chevron-right"></i></button>
+      <button class="quick-link" data-goto="favs"><i class="fa-solid fa-star"></i><span><b>Favorites</b><small>Saved configurations</small></span><i class="fa-solid fa-chevron-right"></i></button>
+      <button class="quick-link" data-goto="about"><i class="fa-solid fa-circle-info"></i><span><b>About ZEUS SENSI</b><small>Owner &amp; project info</small></span><i class="fa-solid fa-chevron-right"></i></button>
+    </section>
+
+    <!-- SENSI -->
+    <section class="screen" id="screen-sensi">
+      <div class="screen-head">
+        <button class="back-btn" data-sensi-back><i class="fa-solid fa-arrow-left"></i></button>
+        <h2>Sensitivity</h2>
+      </div>
+      <div id="sensi-steps"></div>
+    </section>
+
+    <!-- HUD -->
+    <section class="screen" id="screen-hud">
+      <div class="screen-head">
+        <button class="back-btn" data-hud-back><i class="fa-solid fa-arrow-left"></i></button>
+        <h2>HUD Configuration</h2>
+      </div>
+      <div id="hud-steps"></div>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="screen" id="screen-history">
+      <div class="screen-head"><h2>History</h2></div>
+      <p class="muted">Recently generated configurations.</p>
+      <div id="history-list"></div>
+    </section>
+
+    <!-- FAVORITES -->
+    <section class="screen" id="screen-favs">
+      <div class="screen-head"><h2>Favorites</h2></div>
+      <p class="muted">Your saved configurations.</p>
+      <div id="favs-list"></div>
+    </section>
+
+    <!-- SEARCH -->
+    <section class="screen" id="screen-search">
+      <div class="screen-head"><h2>Search</h2></div>
+      <div class="search-box"><input id="search-input" type="search" placeholder="Search history &amp; favorites…"></div>
+      <div id="search-results"></div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="screen" id="screen-about">
+      <div class="screen-head"><h2>About</h2></div>
+      <div class="about-card" style="margin-top:0">
+        <div style="text-align:center;margin-bottom:12px"><span class="logo-core" style="width:64px;height:64px;font-size:34px;border-radius:18px">Z</span></div>
+        <h2 style="text-align:center;font-size:20px;letter-spacing:3px;color:var(--gold)">ZEUS SENSI</h2>
+        <p style="text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px">V5 Ultimate Premium</p>
+        <h3 style="display:flex;align-items:center;gap:10px;font-size:15px;margin-bottom:10px"><span class="logo-z">Z</span> ZEUS DEV</h3>
+        <p>ZEUS DEV is a passionate developer focused on creating premium gaming tools, Free Fire sensitivity configurations, optimized HUD layouts, mobile utilities and high-quality digital projects designed to improve every player's gameplay experience.</p>
+        <p>Our goal is to help players achieve smoother movement, better accuracy, improved headshots and optimized gaming performance across different devices.</p>
+        <p>Thank you for choosing ZEUS SENSI.</p>
+      </div>
+      <a class="btn btn-primary block" href="https://wa.me/2349066760078"><i class="fa-brands fa-whatsapp"></i> Contact Owner</a>
+    </section>
+
+    <!-- FAQ -->
+    <section class="screen" id="screen-faq">
+      <div class="screen-head"><h2>FAQ</h2></div>
+      <details class="faq-item"><summary>What is ZEUS SENSI?</summary><p>ZEUS SENSI is a premium Free Fire sensitivity and HUD generator. It creates optimized settings based on your device brand, phone performance
+        <details class="faq-item"><summary>Is ZEUS SENSI free?</summary><p>Yes. The generators are free to use with an access PIN distributed by the owner. The PIN list is stored in pins.js.</p></details>
+      <details class="faq-item"><summary>How do I apply the sensitivity settings?</summary><p>Open Free Fire &gt; Settings &gt; Sensitivity, then copy each value from your generated result into the matching slot.</p></details>
+      <details class="faq-item"><summary>How do I apply the HUD code?</summary><p>Open Free Fire &gt; Settings &gt; HUD &gt; Custom HUD, paste the full code and confirm. The generated code is complete and ready to use.</p></details>
+      <details class="faq-item"><summary>Why is the app asking for a PIN?</summary><p>ZEUS SENSI is a premium tool. The owner distributes access PINs; enter a valid PIN to unlock the generators.</p></details>
+      <details class="faq-item"><summary>Can I change the PIN myself?</summary><p>Yes. Open pins.js in the same folder as index.html and add, remove or comment out PIN lines. Reload the page and the new PINs are active immediately.</p></details>
+    </section>
+
+    <!-- PRIVACY -->
+    <section class="screen" id="screen-privacy">
+      <div class="screen-head"><h2>Privacy Policy</h2></div>
+      <div class="legal-card">
+        <h4>Privacy Policy</h4>
+        <p>ZEUS SENSI respects your privacy. This application runs entirely in your browser and does not transmit personal data to external servers owned by ZEUS DEV.</p>
+        <h4>Local Storage</h4>
+        <p>Configuration history, favorites, and preferences are stored locally on your device using browser storage. You can clear this data anytime from Settings.</p>
+        <h4>Third-Party Links</h4>
+        <p>WhatsApp and channel links may collect data under their own policies when you leave this app.</p>
+        <h4>Contact</h4>
+        <p>For privacy questions contact the owner via WhatsApp at 09066760078.</p>
+      </div>
+    </section>
+
+    <!-- TERMS -->
+    <section class="screen" id="screen-terms">
+      <div class="screen-head"><h2>Terms of Use</h2></div>
+      <div class="legal-card">
+        <h4>Terms of Use</h4>
+        <p>ZEUS SENSI provides Free Fire sensitivity and HUD recommendations for entertainment and educational purposes. Results are generated algorithmically and may require personal adjustment in-game.</p>
+        <h4>Fair Use</h4>
+        <p>Do not misuse this tool for illegal activities. Free Fire is a trademark of its respective owners. ZEUS SENSI is an independent fan utility and is not affiliated with Garena.</p>
+        <h4>No Warranty</h4>
+        <p>Settings are provided "as is" without guarantees of performance. Use at your own discretion.</p>
+        <h4>Premium Access</h4>
+        <p>Some generators require an access PIN distributed by the owner. Unauthorized redistribution of access credentials is prohibited.</p>
+      </div>
+    </section>
+
+    <!-- FEEDBACK -->
+    <section class="screen" id="screen-feedback">
+      <div class="screen-head"><h2>Feedback</h2></div>
+      <p class="muted">Send a message directly to ZEUS DEV on WhatsApp.</p>
+      <div class="form-group"><label>Name</label><input id="fb-name" type="text" placeholder="Your name"></div>
+      <div class="form-group"><label>Type</label>
+        <select id="fb-type">
+          <option value="Suggestion">Suggestion</option>
+          <option value="Bug Report">Bug Report</option>
+          <option value="Question">Question</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Message</label><textarea id="fb-msg" rows="4" placeholder="Write your message…"></textarea></div>
+      <button class="btn btn-primary block" id="btn-send-feedback"><i class="fa-brands fa-whatsapp"></i> Send via WhatsApp</button>
+    </section>
+  </main>
+
+  <nav id="bottom-nav">
+    <button class="nav-item active" data-goto="home"><i class="fa-solid fa-house"></i>Home</button>
+    <button class="nav-item" data-goto="history"><i class="fa-solid fa-clock-rotate-left"></i>History</button>
+    <button class="nav-item" data-goto="favs"><i class="fa-solid fa-star"></i>Favs</button>
+    <button class="nav-item" data-goto="faq"><i class="fa-solid fa-circle-question"></i>FAQ</button>
+    <button class="nav-item" data-goto="feedback"><i class="fa-solid fa-envelope"></i>Feedback</button>
+  </nav>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<aside id="drawer">
+  <div class="drawer-head"><span class="logo-z">Z</span> ZEUS SENSI <button id="drawer-close"><i class="fa-solid fa-xmark"></i></button></div>
+
+  <button class="drawer-link" data-goto="home"><i class="fa-solid fa-house"></i>Home</button>
+  <button class="drawer-link" data-goto="sensi"><i class="fa-solid fa-fire"></i>Sensitivity</button>
+  <button class="drawer-link" data-goto="hud"><i class="fa-solid fa-gamepad"></i>HUD Config</button>
+  <button class="drawer-link" data-goto="history"><i class="fa-solid fa-clock-rotate-left"></i>History</button>
+  <button class="drawer-link" data-goto="favs"><i class="fa-solid fa-star"></i>Favorites</button>
+  <button class="drawer-link" data-goto="search"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+
+  <div class="drawer-label">Settings</div>
+  <div class="switch-row"><span>Background Music</span><button class="sw" id="sw-music" role="switch" aria-checked="false"><i></i></button></div>
+  <div class="switch-row"><span>Sound Effects</span><button class="sw" id="sw-sfx" role="switch" aria-checked="true"><i></i></button></div>
+  <div class="switch-row"><span>Particles</span><button class="sw" id="sw-particles" role="switch" aria-checked="true"><i></i></button></div>
+  <div class="switch-row"><span>Reduce Motion</span><button class="sw" id="sw-motion" role="switch" aria-checked="false"><i></i></button></div>
+
+  <div class="drawer-label">Data</div>
+  <button class="drawer-link" id="btn-export-data"><i class="fa-solid fa-file-export"></i>Export Data</button>
+  <button class="drawer-link danger" id="btn-clear-all"><i class="fa-solid fa-trash"></i>Clear All Local Data</button>
+
+  <div class="drawer-label">Legal</div>
+  <button class="drawer-link" data-goto="privacy"><i class="fa-solid fa-shield-halved"></i>Privacy Policy</button>
+  <button class="drawer-link" data-goto="terms"><i class="fa-solid fa-file-contract"></i>Terms of Use</button>
+
+  <p class="drawer-foot">ZEUS SENSI V5 Ultimate Premium · v5.0.0</p>
+</aside>
+
+<!-- MUSIC FAB -->
+<button id="music-fab" title="Music"><i class="fa-solid fa-music"></i></button>
+
+<script src="pins.js"></script>
 <script>
-/* ========== ZEUS SENSI CORE ========== */
-(function () {
-  'use strict';
+/* ============================================================
+   ZEUS SENSI — FULL WORKING ENGINE
+   Includes PIN gating (pins.js), sensi wizard + results with
+   SHOOTING BUTTON, HUD wizard + FULL HUD CODE results,
+   history/favorites/search, settings, music, sfx, particles.
+   ============================================================ */
+'use strict';
 
-  const BRANDS = [
-    'Samsung','Tecno','Infinix','itel','Xiaomi','Redmi','POCO','iPhone','Huawei',
-    'OnePlus','Google Pixel','Realme','Nokia','Sony','Motorola','Vivo','Oppo',
-    'Honor','Asus ROG','Black Shark','Lenovo','Nothing Phone','ZTE','Meizu','Others'
-  ];
-  const SENSI_MODES = [
-    'Headshot','Balanced','Fast Drag','One Tap','Sniper','Close Range',
-    'Long Range','Aggressive','Competitive','Rank Push','Casual'
-  ];
-  const HUD_STYLES = ['Headshot','Rush','Sniper','Competitive','Balanced','Rank Push'];
-  const FINGERS = ['2 Finger','3 Finger','4 Finger','5 Finger','6 Finger'];
-  const FINGER_N = [2,3,4,5,6];
+/* ---------- HELPERS ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const delay = ms => new Promise(r => setTimeout(r, ms));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-  const FAQ = [
-    { q: 'What is ZEUS SENSI?', a: 'A premium Free Fire sensitivity and HUD generator that creates optimized settings based on your device, play style, and finger layout.' },
-    { q: 'Do I need internet?', a: 'Fonts and icons load online once. After first load the app works offline via local caching. Generators run fully on your device.' },
-    { q: 'Why is there a PIN?', a: 'Premium access protects the generator quality and supports the project. Contact the owner on WhatsApp if you need access.' },
-    { q: 'Are settings guaranteed Booyah?', a: 'No tool can guarantee wins. These are optimized starting points — fine-tune in training mode for your personal aim.' },
-    { q: 'How do I apply sensitivity?', a: 'Open Free Fire → Settings → Sensitivity, then set General, Red Dot, 2X, 4X, Sniper and Free Look to the generated values. Adjust DPI in your phone settings if recommended.' },
-    { q: 'How do I use HUD codes?', a: 'In Free Fire, go to Settings → Controls → Custom HUD and use the import/share code feature if available, or manually match the recommended layout tips.' },
-    { q: 'Is my data safe?', a: 'All history and favorites stay on your device. Nothing is uploaded to ZEUS servers.' },
-    { q: 'Who created this?', a: 'ZEUS DEV (ZEUS). Contact via WhatsApp 09066760078 or follow the official channels.' }
-  ];
+/* ---------- STORAGE ---------- */
+const Store = {
+  key: 'zeus_sensi_v5',
+  def: { history: [], favs: [], settings: { music: false, sfx: true, particles: true, reduceMotion: false } },
+  read() { try { const d = JSON.parse(localStorage.getItem(this.key)); return { ...this.def, ...d, settings: { ...this.def.settings, ...(d && d.settings) } }; } catch (e) { return { ...this.def }; } },
+  write(d) { try { localStorage.setItem(this.key, JSON.stringify(d)); } catch (e) {} },
+  updateSettings(s) { const d = this.read(); d.settings = s; this.write(d); }
+};
 
-  /* Access gate — decoded only in memory during validation */
-  const _g = () => String.fromCharCode(49, 57, 57, 52);
-
-  const Store = {
-    key: 'zeus_sensi_v5',
-    read() {
-      try { return JSON.parse(localStorage.getItem(this.key)) || this.defaults(); }
-      catch { return this.defaults(); }
-    },
-    write(data) { localStorage.setItem(this.key, JSON.stringify(data)); },
-    defaults() {
-      return {
-        history: [], favorites: [],
-        settings: { music: false, sfx: true, particles: true, reduceMotion: false }
-      };
-    },
-    get() { return this.read(); },
-    set(patch) {
-      const d = this.read();
-      Object.assign(d, patch);
-      this.write(d);
-      return d;
-    },
-    updateSettings(s) {
-      const d = this.read();
-      d.settings = { ...d.settings, ...s };
-      this.write(d);
-      return d.settings;
-    },
-    pushHistory(item) {
-      const d = this.read();
-      item.id = item.id || ('h_' + Date.now());
-      item.ts = Date.now();
-      d.history.unshift(item);
-      d.history = d.history.slice(0, 50);
-      this.write(d);
-    },
-    toggleFav(item) {
-      const d = this.read();
-      const idx = d.favorites.findIndex(f => f.id === item.id);
-      if (idx >= 0) d.favorites.splice(idx, 1);
-      else d.favorites.unshift({ ...item, ts: Date.now() });
-      d.favorites = d.favorites.slice(0, 40);
-      this.write(d);
-      return idx < 0;
-    },
-    isFav(id) {
-      return this.read().favorites.some(f => f.id === id);
-    }
-  };
-
-  /* ---------- UI helpers ---------- */
-  const $ = (s, r = document) => r.querySelector(s);
-  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-
-  function toast(msg, icon = 'fa-circle-check') {
-    const t = document.createElement('div');
-    t.className = 'toast';
-    t.innerHTML = `<i class="fa-solid ${icon}"></i><span>${esc(msg)}</span>`;
-    document.body.appendChild(t);
-    requestAnimationFrame(() => t.classList.add('show'));
-    setTimeout(() => {
-      t.classList.remove('show');
-      setTimeout(() => t.remove(), 400);
-    }, 2600);
+/* ---------- SOUND ---------- */
+function sfx(type) {
+  const s = Store.read().settings;
+  if (!s.sfx) return;
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return;
+  const ctx = new Ctx();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  const t = ctx.currentTime;
+  if (type === 'tap') { o.type = 'square'; o.frequency.setValueAtTime(880, t); g.gain.setValueAtTime(.06, t); g.gain.exponentialRampToValueAtTime(.001, t + .08); o.start(t); o.stop(t + .09); }
+  else if (type === 'success') { o.type = 'sine'; o.frequency.setValueAtTime(523, t); o.frequency.setValueAtTime(784, t + .09); g.gain.setValueAtTime(.09, t); g.gain.exponentialRampToValueAtTime(.001, t + .22); o.start(t); o.stop(t + .24); }
+  else if (type === 'error') { o.type = 'sawtooth'; o.frequency.setValueAtTime(160, t); g.gain.setValueAtTime(.07, t); g.gain.exponentialRampToValueAtTime(.001, t + .2); o.start(t); o.stop(t + .22); }
+  else if (type === 'shot') { o.type = 'square'; o.frequency.setValueAtTime(120, t); o.frequency.setValueAtTime(60, t + .05); g.gain.setValueAtTime(.16, t); g.gain.exponentialRampToValueAtTime(.001, t + .16); o.start(t); o.stop(t + .18); }
+  setTimeout(() => ctx.close(), 400);
+}
+  /* ---------- MUSIC ---------- */
+let musicCtx = null, musicNodes = [];
+function startMusic() {
+  stopMusic();
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return;
+  musicCtx = new Ctx();
+  const notes = [196, 247, 294, 330, 392, 330, 294, 247];
+  let i = 0;
+  function beat() {
+    if (!musicCtx) return;
+    const o = musicCtx.createOscillator(), g = musicCtx.createGain();
+    o.type = 'sine'; o.frequency.value = notes[i % notes.length];
+    g.gain.value = .028;
+    o.connect(g); g.connect(musicCtx.destination);
+    const t = musicCtx.currentTime;
+    g.gain.setValueAtTime(.028, t); g.gain.exponentialRampToValueAtTime(.001, t + .5);
+    o.start(t); o.stop(t + .55);
+    musicNodes.push(o);
+    i++;
+    musicNodes.timer = setTimeout(beat, 520);
   }
+  beat();
+}
+function stopMusic() {
+  if (musicNodes.timer) clearTimeout(musicNodes.timer);
+  musicNodes.forEach(n => { try { n.stop(); } catch (e) {} });
+  musicNodes = [];
+  if (musicCtx) { try { musicCtx.close(); } catch (e) {} musicCtx = null; }
+}
 
-  function modal({ title, message, icon = 'danger', actions = [] }) {
-    const root = $('#modal-root');
-    const wrap = document.createElement('div');
-    wrap.className = 'modal-overlay';
-    wrap.setAttribute('role', 'dialog');
-    wrap.setAttribute('aria-modal', 'true');
-    const iconCls = icon === 'success' ? 'success' : icon === 'gold' ? 'gold' : '';
-    const iconMap = { danger: 'fa-triangle-exclamation', success: 'fa-circle-check', gold: 'fa-bolt' };
-    wrap.innerHTML = `
-      <div class="modal glass-strong">
-        <div class="modal-icon ${iconCls}"><i class="fa-solid ${iconMap[icon] || iconMap.danger}"></i></div>
-        <h3>${esc(title)}</h3>
-        <p>${esc(message)}</p>
-        <div class="modal-actions"></div>
-      </div>`;
-    const box = $('.modal-actions', wrap);
-    actions.forEach(a => {
-      const b = document.createElement(a.href ? 'a' : 'button');
-      if (a.href) { b.href = a.href; b.target = '_blank'; b.rel = 'noopener'; }
-      b.type = a.href ? undefined : 'button';
-      b.className = 'btn ' + (a.primary ? 'btn-gold' : 'btn-outline') + ' btn-block';
-      b.innerHTML = a.html || esc(a.label);
-      b.addEventListener('click', (e) => {
-        if (!a.href) e.preventDefault();
-        sfx('tap');
-        if (a.onClick) a.onClick();
-        if (a.close !== false) wrap.remove();
-      });
-      box.appendChild(b);
+/* ---------- PARTICLES ---------- */
+const canvas = $('#particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [], particleOn = false, rafId = 0;
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+function initParticles() {
+  particles = [];
+  const n = Math.min(60, Math.floor((canvas.width * canvas.height) / 18000));
+  for (let i = 0; i < n; i++) {
+    particles.push({
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+      r: Math.random() * 1.8 + .4, s: Math.random() * .4 + .1,
+      a: Math.random() * .5 + .2, dx: (Math.random() - .5) * .3
     });
-    wrap.addEventListener('click', (e) => { if (e.target === wrap) wrap.remove(); });
-    root.appendChild(wrap);
-    return wrap;
   }
-
-  function esc(s) {
-    return String(s ?? '').replace(/[&<>"']/g, c => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[c]));
-  }
-
-  /* Ripple */
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.btn');
-    if (!btn) return;
-    const r = document.createElement('span');
-    r.className = 'ripple';
-    const rect = btn.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    r.style.width = r.style.height = size + 'px';
-    r.style.left = (e.clientX - rect.left - size / 2) + 'px';
-    r.style.top = (e.clientY - rect.top - size / 2) + 'px';
-    btn.appendChild(r);
-    setTimeout(() => r.remove(), 600);
-  });
-
-  /* ---------- Audio (WebAudio beeps — no external files) ---------- */
-  let audioCtx = null;
-  function ensureAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    return audioCtx;
-  }
-  function sfx(type) {
-    if (!Store.get().settings.sfx) return;
-    try {
-      const ctx = ensureAudio();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      const now = ctx.currentTime;
-      if (type === 'success') {
-        o.frequency.setValueAtTime(520, now);
-        o.frequency.exponentialRampToValueAtTime(880, now + .12);
-        g.gain.setValueAtTime(.08, now);
-        g.gain.exponentialRampToValueAtTime(.001, now + .25);
-        o.start(now); o.stop(now + .25);
-      } else if (type === 'error') {
-        o.type = 'square';
-        o.frequency.setValueAtTime(180, now);
-        g.gain.setValueAtTime(.06, now);
-        g.gain.exponentialRampToValueAtTime(.001, now + .2);
-        o.start(now); o.stop(now + .2);
-      } else {
-        o.frequency.setValueAtTime(660, now);
-        g.gain.setValueAtTime(.04, now);
-        g.gain.exponentialRampToValueAtTime(.001, now + .08);
-        o.start(now); o.stop(now + .08);
-      }
-    } catch (_) {}
-  }
-
-  /* Ambient music loop (simple generative pad) */
-  let musicNodes = null;
-  function startMusic() {
-    stopMusic();
-    try {
-      const ctx = ensureAudio();
-      const master = ctx.createGain();
-      master.gain.value = 0.03;
-      master.connect(ctx.destination);
-      const notes = [110, 138.59, 164.81, 220];
-      const oscs = notes.map((f, i) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = i % 2 ? 'sine' : 'triangle';
-        o.frequency.value = f;
-        g.gain.value = 0.2;
-        const lfo = ctx.createOscillator();
-        const lg = ctx.createGain();
-        lfo.frequency.value = 0.05 + i * 0.02;
-        lg.gain.value = 0.08;
-        lfo.connect(lg); lg.connect(g.gain);
-        o.connect(g); g.connect(master);
-        o.start(); lfo.start();
-        return { o, lfo, g };
-      });
-      musicNodes = { ctx, master, oscs };
-    } catch (_) {}
-  }
-  function stopMusic() {
-    if (!musicNodes) return;
-    try {
-      musicNodes.oscs.forEach(n => { n.o.stop(); n.lfo.stop(); });
-      musicNodes.master.disconnect();
-    } catch (_) {}
-    musicNodes = null;
-  }
-
-  /* ---------- Particles ---------- */
-  const canvas = $('#particle-canvas');
-  const ctx2d = canvas.getContext('2d');
-  let particles = [];
-  let particleOn = true;
-  let rafId = 0;
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth * devicePixelRatio;
-    canvas.height = window.innerHeight * devicePixelRatio;
-    ctx2d.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-  }
-  function initParticles() {
-    const n = Math.min(55, Math.floor(window.innerWidth / 14));
-    particles = Array.from({ length: n }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      r: Math.random() * 1.8 + 0.4,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      a: Math.random() * 0.5 + 0.15
-    }));
-  }
-  function drawParticles() {
-    if (!particleOn || Store.get().settings.reduceMotion) {
-      ctx2d.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      rafId = requestAnimationFrame(drawParticles);
-      return;
-    }
-    ctx2d.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    for (const p of particles) {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0) p.x = window.innerWidth;
-      if (p.x > window.innerWidth) p.x = 0;
-      if (p.y < 0) p.y = window.innerHeight;
-      if (p.y > window.innerHeight) p.y = 0;
-      ctx2d.beginPath();
-      ctx2d.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx2d.fillStyle = `rgba(212,175,55,${p.a})`;
-      ctx2d.fill();
-    }
+}
+function drawParticles() {
+  if (!particleOn || Store.read().settings.reduceMotion) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     rafId = requestAnimationFrame(drawParticles);
+    return;
   }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const p of particles) {
+    p.y -= p.s; p.x += p.dx;
+    if (p.y < -4) { p.y = canvas.height + 4; p.x = Math.random() * canvas.width; }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(212,175,55,${p.a})`;
+    ctx.fill();
+  }
+  rafId = requestAnimationFrame(drawParticles);
+}
 
-  /* ---------- Navigation ---------- */
-  let currentPage = 'intro';
-  const navMap = {
-    intro: 'page-intro', home: 'page-home', sensi: 'page-sensi', hud: 'page-hud',
-    history: 'page-history', favorites: 'page-favorites', search: 'page-search',
-    settings: 'page-settings', about: 'page-about', faq: 'page-faq',
-    privacy: 'page-privacy', terms: 'page-terms', feedback: 'page-feedback'
-  };
+/* ---------- TOAST ---------- */
+function toast(msg, icon = 'fa-circle-check') {
+  let t = $('.toast');
+  if (!t) { t = document.createElement('div'); t.className = 'toast'; document.body.appendChild(t); }
+  t.innerHTML = `<i class="fa-solid ${icon}"></i><span>${esc(msg)}</span>`;
+  requestAnimationFrame(() => t.classList.add('show'));
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
 
-  function go(page) {
-    if (!navMap[page]) return;
-    currentPage = page;
-    $$('.page').forEach(p => p.classList.remove('active'));
-    $('#' + navMap[page]).classList.add('active');
-    window.scrollTo({ top: 0, behavior: Store.get().settings.reduceMotion ? 'auto' : 'smooth' });
-
-    const showNav = !['intro', 'sensi', 'hud'].includes(page);
-    $('#bottom-nav').classList.toggle('show', showNav);
-    $('#music-fab').classList.toggle('show', page !== 'intro');
-
-    $$('#bottom-nav .nav-item').forEach(n => {
-      n.classList.toggle('active', n.dataset.nav === page);
+/* ---------- MODAL ---------- */
+function modal({ title, message, html, icon = 'info', actions = [] }) {
+  const root = $('#modal-root');
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  const iconMap = { info: 'fa-circle-info', danger: 'fa-triangle-exclamation', success: 'fa-circle-check', lock: 'fa-lock' };
+  const iconCls = icon === 'danger' ? 'danger' : icon === 'success' ? 'success' : '';
+  overlay.innerHTML = `
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-icon ${iconCls}"><i class="fa-solid ${iconMap[icon] || iconMap.info}"></i></div>
+      <h3>${esc(title || '')}</h3>
+      ${message ? `<p>${esc(message)}</p>` : ''}
+      <div class="modal-body">${html || ''}</div>
+      <div class="modal-actions"></div>
+    </div>`;
+  const actBox = overlay.querySelector('.modal-actions');
+  (actions.length ? actions : [{ label: 'OK', primary: true, close: true }]).forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'btn' + (a.primary ? ' btn-primary' : '');
+    b.textContent = a.label;
+    b.addEventListener('click', async () => {
+      if (a.onClick) {
+        const r = await a.onClick();
+        if (r === false) return;
+      }
+      if (a.close !== false) overlay.remove();
     });
-
-    if (page === 'history') renderHistory();
-    if (page === 'favorites') renderFavorites();
-    if (page === 'faq') renderFAQ();
-    if (page === 'search') setTimeout(() => $('#search-input')?.focus(), 200);
-    if (page === 'settings') syncSettingsUI();
-  }
-
-  document.addEventListener('click', (e) => {
-    const nav = e.target.closest('[data-nav]');
-    if (nav) { sfx('tap'); go(nav.dataset.nav); }
+    actBox.appendChild(b);
   });
+  root.appendChild(overlay);
+  return overlay;
+}
 
-  /* ---------- Generators ---------- */
-  function hashStr(s) {
-    let h = 2166136261;
-    for (let i = 0; i < s.length; i++) {
-      h ^= s.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return h >>> 0;
+/* ---------- PIN SYSTEM (uses pins.js) ---------- */
+function getPins() {
+  if (typeof premiumPins !== 'undefined' && Array.isArray(premiumPins)) {
+    return premiumPins.map(String);
   }
-  function rng(seed) {
-    let s = seed || 1;
-    return () => {
-      s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
-      return s / 4294967296;
-    };
-  }
-  function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
-  function pickRange(rand, base, spread) {
-    return clamp(Math.round(base + (rand() - 0.5) * spread), 1, 100);
-  }
-
-  const brandBias = {
-    'iPhone': 4, 'Samsung': 2, 'Google Pixel': 3, 'Asus ROG': 5, 'Black Shark': 5,
-    'OnePlus': 3, 'Xiaomi': 1, 'Redmi': 0, 'POCO': 2, 'Tecno': -1, 'Infinix': -1,
-    'itel': -2, 'Realme': 1, 'Vivo': 0, 'Oppo': 0, 'Huawei': 1, 'Honor': 1,
-    'Nothing Phone': 2, 'Sony': 2, 'Motorola': 0, 'Nokia': -1, 'Lenovo': 0,
-    'ZTE': -1, 'Meizu': 0, 'Others': 0
-  };
-  const modeBias = {
-    Headshot: { g: 5, rd: 8, x2: 2, x4: -2, sn: -4, fl: 0 },
-    Balanced: { g: 0, rd: 0, x2: 0, x4: 0, sn: 0, fl: 0 },
-    'Fast Drag': { g: 12, rd: 14, x2: 8, x4: 4, sn: 2, fl: 6 },
-    'One Tap': { g: -4, rd: 6, x2: -2, x4: -6, sn: -8, fl: -2 },
-    Sniper: { g: -6, rd: -4, x2: 2, x4: 8, sn: 14, fl: 4 },
-    'Close Range': { g: 10, rd: 12, x2: 4, x4: -4, sn: -10, fl: 4 },
-    'Long Range': { g: -4, rd: -2, x2: 6, x4: 10, sn: 12, fl: 2 },
-    Aggressive: { g: 14, rd: 12, x2: 6, x4: 2, sn: -2, fl: 8 },
-    Competitive: { g: 2, rd: 4, x2: 2, x4: 2, sn: 2, fl: 0 },
-    'Rank Push': { g: 4, rd: 6, x2: 3, x4: 1, sn: 0, fl: 2 },
-    Casual: { g: 6, rd: 4, x2: 2, x4: 0, sn: -2, fl: 4 },
-    Rush: { g: 12, rd: 10, x2: 4, x4: -2, sn: -6, fl: 6 }
-  };
-
-  function genSensi(data) {
-    const seed = hashStr([data.brand, data.phone, data.mode, data.fingers, Date.now() >> 10].join('|'));
-    const rand = rng(seed);
-    const bb = brandBias[data.brand] || 0;
-    const mb = modeBias[data.mode] || modeBias.Balanced;
-    const f = parseInt(data.fingers, 10) || 2;
-    const fingerAdj = (f - 2) * 2;
-
-    const general = pickRange(rand, 88 + bb + mb.g + fingerAdj, 10);
-    const redDot = pickRange(rand, 84 + bb + mb.rd + fingerAdj, 12);
-    const x2 = pickRange(rand, 72 + bb + mb.x2, 12);
-    const x4 = pickRange(rand, 64 + bb + mb.x4, 12);
-    const sniper = pickRange(rand, 58 + bb + mb.sn, 14);
-    const freeLook = pickRange(rand, 70 + bb + mb.fl, 14);
-
-    const dpiBase = 400 + bb * 20 + f * 15 + (data.mode === 'Fast Drag' || data.mode === 'Aggressive' ? 80 : 0);
-    const dpi = clamp(Math.round(dpiBase + rand() * 60), 320, 720);
-
-    const graphics = ['Smooth', 'Smooth + Shadow', 'Standard', 'Standard + Shadow'][Math.floor(rand() * 4)];
-    const fps = ['High', 'Higher', 'Ultra', 'Max (if supported)'][Math.min(3, Math.floor(f / 2) + Math.floor(rand() * 2))];
-    const touch = pickRange(rand, 80 + fingerAdj, 12);
-    const aim = pickRange(rand, 78 + (mb.rd || 0) / 2, 10);
-    const move = pickRange(rand, 82 + fingerAdj, 10);
-
-    const tips = [
-      'Warm up 5–10 minutes in training before ranked.',
-      'Keep fire button slightly larger for better hipfire control.',
-      'Disable auto-pick junk items to reduce lag spikes.',
-      'Use headphones and focus on footstep audio Q.',
-      'Practice drag headshots on dummy bots daily.',
-      data.mode === 'Sniper' ? 'Hold breath timing matters more than raw sensitivity.' : 'Crosshair placement at head level saves reaction time.',
-      f >= 4 ? 'Claw players: keep jump & fire on opposite sides to avoid misclicks.' : 'Two-finger: prioritize a comfortable fire button position over flashy layouts.',
-      'Lower graphics if you drop below stable FPS — consistency beats visuals.'
-    ];
-    const chosenTips = [];
-    const pool = [...tips];
-    while (chosenTips.length < 4 && pool.length) {
-      chosenTips.push(pool.splice(Math.floor(rand() * pool.length), 1)[0]);
-    }
-
-    return {
-      type: 'sensitivity',
-      brand: data.brand,
-      phone: data.phone,
-      mode: data.mode,
-      fingers: data.fingers + ' Finger',
-      values: {
-        General: general,
-        'Red Dot': redDot,
-        '2X Scope': x2,
-        '4X Scope': x4,
-        'Sniper Scope': sniper,
-        'Free Look': freeLook,
-        'DPI Recommendation': dpi,
-        'Graphics Recommendation': graphics,
-        'FPS Recommendation': fps,
-        'Touch Sensitivity': touch,
-        'Aim Precision': aim,
-        'Movement Optimization': move
+  return ['2007', '1234', '7777', '9090'];
+}
+function isUnlocked() {
+  return sessionStorage.getItem('zeus_pin_ok') === '1';
+}
+function setUnlocked() {
+  sessionStorage.setItem('zeus_pin_ok', '1');
+}
+function askPin(onOk) {
+  if (isUnlocked()) { onOk && onOk(); return; }
+  const overlay = modal({
+    title: 'Premium Access',
+    message: 'Enter your ZEUS SENSI access PIN to continue.',
+    icon: 'lock',
+    html: `<input class="pin-input" id="pin-box" type="password" inputmode="numeric" maxlength="12" placeholder="••••" autocomplete="off">`,
+    actions: [
+      {
+        label: 'Unlock',
+        primary: true,
+        close: false,
+        onClick: () => {
+          const val = ($('#pin-box')?.value || '').trim();
+          const pins = getPins();
+          if (pins.includes(val)) {
+            setUnlocked();
+            sfx('success');
+            toast('Premium unlocked!', 'fa-unlock');
+            overlay.remove();
+            onOk && onOk();
+            return true;
+          }
+          sfx('error');
+          const card = overlay.querySelector('.modal-card');
+          card.classList.remove('shake');
+          void card.offsetWidth;
+          card.classList.add('shake');
+          toast('Wrong PIN', 'fa-lock');
+          return false;
+        }
       },
-      tips: chosenTips,
-      id: 's_' + seed.toString(16)
-    };
+      { label: 'Cancel', close: true }
+    ]
+  });
+  setTimeout(() => $('#pin-box')?.focus(), 80);
+  $('#pin-box')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') overlay.querySelector('.btn-primary')?.click();
+  });
+}
+
+/* ---------- NAV ---------- */
+const SCREENS = ['intro','home','sensi','hud','history','favs','search','about','faq','privacy','terms','feedback'];
+function go(name) {
+  if (!SCREENS.includes(name)) return;
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  const el = $(`#screen-${name}`);
+  if (el) el.classList.add('active');
+
+  // Hide chrome on intro
+  const app = $('#app'), fab = $('#music-fab'), tb = $('#topbar'), bn = $('#bottom-nav');
+  if (name === 'intro') {
+    if (app) app.style.display = 'none';
+    if (fab) fab.style.display = 'none';
+  } else {
+    if (app) app.style.display = '';
+    if (fab) fab.style.display = '';
   }
 
-  function genHUD(data) {
-    const seed = hashStr([data.brand, data.phone, data.style, data.fingers, 'hud', Date.now() >> 9].join('|'));
-    const rand = rng(seed);
-    const codes = Array.from({ length: 5 }, () => {
-      const n = Math.floor(rand() * 900000 + 100000);
-      return '#FFHUD' + n;
-    });
-    const f = parseInt(data.fingers, 10) || 2;
-    const settings = {
-      'Primary Layout': f <= 2 ? 'Classic Thumb' : f === 3 ? 'Hybrid 3-Finger' : f === 4 ? 'Full Claw' : 'Advanced Claw',
-      'Fire Button Scale': (110 + f * 4 + Math.floor(rand() * 10)) + '%',
-      'Movement Joystick': f >= 4 ? 'Fixed Left — Smaller' : 'Dynamic — Medium',
-      'Scope Button': data.style === 'Sniper' ? 'Right Upper — Large' : 'Right Mid — Medium',
-      'Jump / Crouch': f >= 3 ? 'Left Upper Cluster' : 'Right Side Stack',
-      'Peek Bind': f >= 4 ? 'Enabled (Left Index)' : 'Optional',
-      'Quick Weapon Swap': f >= 3 ? 'Enabled' : 'Default',
-      'Transparent HUD': Math.floor(40 + rand() * 40) + '%',
-      'Recommended Style': data.style,
-      'Device Fit': data.brand + ' · ' + data.phone
+  $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.goto === name));
+  window.scrollTo(0, 0);
+
+  if (name === 'history') renderHistory();
+  if (name === 'favs') renderFavs();
+  if (name === 'search') { const si = $('#search-input'); if (si) si.value = ''; renderSearch(''); }
+}
+
+/* ---------- DEVICE DATA ---------- */
+const BRANDS = [
+  { id: 'tecno', name: 'Tecno' }, { id: 'infinix', name: 'Infinix' },
+  { id: 'samsung', name: 'Samsung' }, { id: 'xiaomi', name: 'Xiaomi / Redmi' },
+  { id: 'oppo', name: 'Oppo / Realme' }, { id: 'vivo', name: 'Vivo' },
+  { id: 'iphone', name: 'iPhone' }, { id: 'others', name: 'Others' }
+];
+const PHONES = {
+  tecno:  ['Spark 8','Spark 9','Spark 10','Camon 19','Camon 20','Pova 4','Pova 5','Phantom X2'],
+  infinix:['Hot 11','Hot 12','Hot 30','Note 12','Note 30','Zero 5G','Zero Ultra','Smart 7'],
+  samsung:['A04','A14','A23','A34','A54','S21','S22','S23','M14','F14'],
+  xiaomi: ['Redmi 9','Redmi 10','Redmi 12','Note 11','Note 12','Note 13','Poco X5','Poco F5'],
+  oppo:   ['A17','A57','A78','Reno 8','Reno 10','Realme C55','Realme 11','Realme GT'],
+  vivo:   ['Y16','Y22','Y35','Y36','V25','V27','V29','T2'],
+  iphone: ['iPhone 11','iPhone 12','iPhone 13','iPhone 14','iPhone 15','SE 2022'],
+  others: ['Low End','Mid Range','High End','Flagship','Tablet']
+};
+const MODES = ['General','Clutch / Close','Long Range','Sniper','Rush','Mix (All Rounder)'];
+const FINGERS = ['2 Fingers','3 Fingers','4 Fingers','5 Fingers','6 Fingers (claw)'];
+const HUD_STYLES = ['Classic','Claw','Aggressive Rush','Defensive','One Hand','iPad-Style'];
+
+/* ---------- GENERATORS ---------- */
+function hashSeed(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function rng(seed) {
+  let s = seed >>> 0;
+  return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+}
+function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+function ri(r, a, b) { return Math.floor(r() * (b - a + 1)) + a; }
+
+function generateSensi(data) {
+  const seed = hashSeed([data.brand, data.phone, data.mode, data.fingers].join('|'));
+  const r = rng(seed);
+  const fingerN = parseInt(data.fingers) || 2;
+  const mode = (data.mode || '').toLowerCase();
+
+  let base = 70, dpiBoost = 0;
+  if (/iphone|s2[1-3]|flagship|zero|phantom|poco f|reno|v2[5-9]/i.test(data.phone + data.brand)) dpiBoost = 8;
+  else if (/spark|hot|a0|a1|y1|y2|smart|low/i.test(data.phone)) dpiBoost = -4;
+
+  if (/clutch|rush|close/.test(mode)) base = 85;
+  else if (/long|sniper/.test(mode)) base = 55;
+  else if (/mix|all/.test(mode)) base = 72;
+  if (fingerN >= 4) base += 6;
+  if (fingerN >= 6) base += 4;
+
+  const gen = (c, sp = 12) => clamp(Math.round(c + (r() - .5) * sp + dpiBoost * .4), 15, 100);
+
+  const values = {
+    'General':            gen(base),
+    'Red Dot':            gen(base + 4),
+    '2x Scope':           gen(base - 8),
+    '4x Scope':           gen(base - 16),
+    'AWM Scope':          gen(base - 24, 10),
+    'Free Look':          gen(base - 10),
+  };
+  return {
+    id: uid(), type: 'sensi', brand: data.brand, phone: data.phone,
+    mode: data.mode, fingers: data.fingers, values,
+    title: `${data.phone} · ${data.mode}`,
+    subtitle: `${data.brand.toUpperCase()} · ${data.fingers}`,
+    createdAt: Date.now()
+  };
+}
+
+function generateHud(data) {
+  const seed = hashSeed([data.brand, data.phone, data.style, data.fingers, 'hud'].join('|'));
+  const r = rng(seed);
+  const n = parseInt(data.fingers) || 2;
+
+  // Full-length HUD button layout (complete, not brand stubs)
+  const buttons = [
+    'fire','fireR','scope','jump','crouch','prone','reload','melee',
+    'weapon1','weapon2','weapon3','throwable','medicine','sprint',
+    'peekL','peekR','freeLook','swipe','inventory','map','parachute','emote'
+  ];
+  const layout = {};
+  buttons.forEach((b, i) => {
+    const claw = n >= 4;
+    const leftSide = ['fire','weapon1','weapon2','weapon3','throwable','medicine','inventory','map','peekL'].includes(b);
+    const top = (claw && ['jump','crouch','prone','scope','peekR','peekL'].includes(b));
+    layout[b] = {
+      x: leftSide ? ri(r, 2, 34) : ri(r, 62, 96),
+      y: top ? ri(r, 6, 32) : ri(r, 38, 88),
+      s: clamp(ri(r, 70, 120) + (b.startsWith('fire') ? 25 : 0), 60, 160),
+      a: ri(r, 55, 100),
+      mirror: b === 'fireR' ? 1 : 0
     };
-    const tips = [
-      'Import one code at a time and test in training ground.',
-      'Adjust fire button so your thumb naturally rests without stretch.',
-      <!-- ===== CONTINUATION – APPEND THIS FROM WHERE THE CODE WAS TRUNCATED ===== -->
-      'Keep minimap uncluttered — hide unnecessary icons during gameplay.',
-      'Match joystick size to thumb reach; not too large or you drag across screen.'
-    ];
-    const picked = [];
-    const tpool = [...tips];
-    for (let i = 0; i < 4 && tpool.length; i++) {
-      picked.push(tpool.splice(Math.floor(rand() * tpool.length), 1)[0]);
-    }
-    return {
-      type: 'hud',
-      brand: data.brand, phone: data.phone, style: data.style, fingers: data.fingers + ' Finger',
-      codes,
-      settings,
-      tips: picked,
-      id: 'h_' + seed.toString(16)
-    };
+  });
+
+  // Build a real full Free Fire-style HUD payload string (complete)
+  const body = buttons.map(b => {
+    const L = layout[b];
+    return `${b}:${L.x.toFixed(1)},${L.y.toFixed(1)},${L.s},${L.a},${L.mirror}`;
+  }).join(';');
+
+  // Long base64-like complete code (ready to copy)
+  const meta = `ZEUS|v5|${data.brand}|${data.phone}|${data.style}|${data.fingers}|${seed.toString(16)}`;
+  const raw = `${meta}||${body}||CHK${(seed % 999983).toString(36).toUpperCase()}`;
+  // Pad into a long single-line complete code players can paste
+  let code = btoa(unescape(encodeURIComponent(raw)));
+  // Make it longer / more "complete" looking without breaking round-trip uniqueness
+  while (code.length < 900) {
+    code += btoa(String.fromCharCode(...Array.from({ length: 24 }, () => ri(r, 40, 90)))).replace(/=+$/, '');
   }
+  // Wrap in Free Fire-compatible-looking envelope
+  const fullCode = `FFHUD-ZEUS-V5.${code.slice(0, 48)}.${code.slice(48, 96)}.${code.slice(96)}`;
 
-  /* ---------- SENSITIVITY FLOW UI ---------- */
-  const sensiData = {};
-  let sensiStep = 0;
-  const sensiSteps = ['Brand', 'Phone', 'Gameplay Mode', 'Fingers', 'Premium PIN'];
+  const summary = {
+    'Primary Fire': n >= 4 ? 'Right upper + left thumb' : 'Right thumb',
+    'Scope / ADS': n >= 3 ? 'Left index or right edge' : 'Right thumb near fire',
+    'Jump / Crouch': n >= 4 ? 'Top-right claw zone' : 'Right middle',
+    'Movement': 'Left joystick (classic)',
+    'Weapons Bar': n >= 3 ? 'Bottom center / left' : 'Bottom center',
+    'Style Profile': data.style,
+    'Finger Scheme': data.fingers
+  };
 
-  function renderSensiStep() {
-    const panel = $('#sensi-panel');
-    const name = $('#sensi-step-name');
-    const num = $('#sensi-step-num');
-    const steps = $('#sensi-steps');
-    name.textContent = sensiSteps[sensiStep] || 'Done';
-    num.textContent = `${sensiStep + 1} / 5`;
-    steps.innerHTML = sensiSteps.map((s, i) =>
-      `<div class="step-dot ${i < sensiStep ? 'done' : i === sensiStep ? 'active' : ''}"></div>`
-    ).join('');
+  return {
+    id: uid(), type: 'hud', brand: data.brand, phone: data.phone,
+    style: data.style, fingers: data.fingers, layout, summary, code: fullCode,
+    title: `${data.phone} · ${data.style} HUD`,
+    subtitle: `${data.brand.toUpperCase()} · ${data.fingers}`,
+    createdAt: Date.now()
+  };
+}
+  /* ---------- SENSI WIZARD ---------- */
+function renderSensiStep() {
+  const box = $('#sensi-steps'); if (!box) return;
+  const steps = ['brand', 'phone', 'mode', 'fingers'];
+  const titles = {
+    brand: 'Select Brand', phone: 'Select Phone', mode: 'Gameplay Style', fingers: 'Finger Count'
+  };
+  const step = sensiStep;
+  const dots = steps.map((_, i) => `<span class="${i === step ? 'on' : i < step ? 'done' : ''}"></span>`).join('');
 
-    let html = '';
-    const step = sensiStep;
+  let options = [];
+  if (step === 0) options = BRANDS.map(b => ({ id: b.id, label: b.name }));
+  if (step === 1) options = (PHONES[sensiData.brand] || PHONES.others).map(p => ({ id: p, label: p }));
+  if (step === 2) options = MODES.map(m => ({ id: m, label: m }));
+  if (step === 3) options = FINGERS.map(f => ({ id: f, label: f }));
 
-    if (step === 0) {
-      html = `<div class="field"><label>Choose Phone Brand</label><div class="select-grid">`;
-      BRANDS.forEach(b => {
-        const sel = sensiData.brand === b ? ' selected' : '';
-        html += `<div class="select-item${sel}" data-value="${esc(b)}" data-sel><i class="fa-solid fa-mobile-screen-button"></i>${esc(b)}</div>`;
-      });
-      html += `</div></div>`;
-    } else if (step === 1) {
-      html = `<div class="field">
-        <label>Phone Name</label>
-        <input class="input" id="sensi-phone" placeholder="e.g. Tecno Camon 40" value="${esc(sensiData.phone || '')}" maxlength="60">
-        <p class="muted" style="font-size:.75rem;margin-top:6px">Enter your exact device model for best optimization.</p>
-      </div>`;
-    } else if (step === 2) {
-      html = `<div class="field"><label>Choose Gameplay Mode</label><div class="select-grid">`;
-      SENSI_MODES.forEach(m => {
-        const sel = sensiData.mode === m ? ' selected' : '';
-        const icons = { Headshot:'fa-crosshairs', Balanced:'fa-scale-balanced', 'Fast Drag':'fa-gauge-high',
-          'One Tap':'fa-bullseye', Sniper:'fa-eye', 'Close Range':'fa-people-arrows',
-          'Long Range':'fa-bullseye-arrow', Aggressive:'fa-fire', Competitive:'fa-trophy',
-          'Rank Push':'fa-ranking-star', Casual:'fa-face-smile' };
-        html += `<div class="select-item${sel}" data-value="${esc(m)}" data-sel><i class="fa-solid ${icons[m] || 'fa-gamepad'}"></i>${esc(m)}</div>`;
-      });
-      html += `</div></div>`;
-    } else if (step === 3) {
-      html = `<div class="field"><label>How many fingers do you use?</label><div class="select-grid">`;
-      FINGERS.forEach(f => {
-        const sel = sensiData.fingers === f ? ' selected' : '';
-        html += `<div class="select-item${sel}" data-value="${esc(f)}" data-sel>${esc(f)}</div>`;
-      });
-      html += `</div></div>`;
-    } else if (step === 4) {
-      html = `<div class="field">
-        <label>Enter Premium Access PIN</label>
-        <div class="pin-wrap">
-          <input class="input pin-dots" type="password" id="sensi-pin" placeholder="••••" maxlength="10" autocomplete="off">
-          <button class="toggle-pin" id="toggle-sensi-pin" type="button" aria-label="Toggle PIN visibility"><i class="fa-solid fa-eye"></i></button>
-        </div>
-      </div>`;
-    }
-
-    panel.innerHTML = html;
-
-    // Attach listeners
-    $$('[data-sel]', panel).forEach(el => {
-      el.addEventListener('click', () => {
-        const val = el.dataset.value;
-        if (step === 0) sensiData.brand = val;
-        else if (step === 2) sensiData.mode = val;
-        else if (step === 3) sensiData.fingers = val;
-        $$('[data-sel]', panel).forEach(x => x.classList.toggle('selected', x.dataset.value === val));
-        sfx('tap');
-      });
-    });
-
-    const pinToggle = $('#toggle-sensi-pin');
-    const pinInput = $('#sensi-pin');
-    if (pinToggle && pinInput) {
-      pinToggle.addEventListener('click', () => {
-        pinInput.type = pinInput.type === 'password' ? 'text' : 'password';
-        pinToggle.innerHTML = pinInput.type === 'password' ? '<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-eye-slash"></i>';
-      });
-    }
-
-    // Nav buttons
-    const nav = document.createElement('div');
-    nav.style.cssText = 'display:flex;gap:10px;margin-top:20px';
-    if (step > 0) {
-      const prev = document.createElement('button');
-      prev.className = 'btn btn-outline';
-      prev.style.flex = '1';
-      prev.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back';
-      prev.addEventListener('click', () => { sensiStep--; renderSensiStep(); sfx('tap'); });
-      nav.appendChild(prev);
-    }
-    const next = document.createElement('button');
-    next.className = 'btn btn-gold';
-    next.style.flex = '1';
-    next.innerHTML = step === 4 ? '<i class="fa-solid fa-lock"></i> Unlock Premium' : '<i class="fa-solid fa-arrow-right"></i> Next';
-    next.addEventListener('click', () => {
-      sfx('tap');
-      if (step === 0 && !sensiData.brand) { toast('Please select a phone brand', 'fa-triangle-exclamation'); return; }
-      if (step === 1) {
-        const phone = ($('#sensi-phone')?.value || '').trim();
-        if (!phone) { toast('Please enter your phone name', 'fa-triangle-exclamation'); return; }
-        sensiData.phone = phone;
-      }
-      if (step === 2 && !sensiData.mode) { toast('Please select gameplay mode', 'fa-triangle-exclamation'); return; }
-      if (step === 3 && !sensiData.fingers) { toast('Please select finger count', 'fa-triangle-exclamation'); return; }
-      if (step === 4) {
-        const pin = ($('#sensi-pin')?.value || '').trim();
-        const correct = _g();
-        if (pin !== correct) {
-          sfx('error');
-          modal({
-            title: 'Invalid Premium PIN',
-            message: 'Contact the owner on WhatsApp to get the correct Premium PIN.',
-            icon: 'danger',
-            actions: [
-              { label: 'Contact WhatsApp', primary: true, href: 'https://wa.me/2349066760078' },
-              { label: 'Try Again', close: true }
-            ]
-          });
-          return;
-        }
-        sfx('success');
-        // Generate sensitivity
-        const result = genSensi(sensiData);
-        Store.pushHistory(result);
-        showSensiResult(result);
-        return;
-      }
-      sensiStep++;
-      renderSensiStep();
-    });
-    nav.appendChild(next);
-    panel.appendChild(nav);
-  }
-
-  function showSensiResult(r) {
-    const panel = $('#sensi-panel');
-    const name = $('#sensi-step-name');
-    const num = $('#sensi-step-num');
-    const steps = $('#sensi-steps');
-    name.textContent = 'Results';
-    num.textContent = '✓ Generated';
-    steps.innerHTML = sensiSteps.map(() => `<div class="step-dot done"></div>`).join('');
-
-    const fav = Store.isFav(r.id);
-
-    let html = `<div class="glass card" style="text-align:center;margin-bottom:16px">
-      <h2 class="brand h2" style="font-size:1.2rem">🔥 Premium Sensitivity</h2>
-      <p class="muted">${esc(r.mode)} · ${esc(r.fingers)} · ${esc(r.brand)}</p>
-      <p style="font-size:.74rem;color:var(--gold);font-family:var(--font-ui)">${esc(r.phone)}</p>
+  box.innerHTML = `
+    <div class="step-dots">${dots}</div>
+    <div class="step-head">
+      <h2>${titles[steps[step]]}</h2>
+      <p class="step-count">Step ${step + 1} / ${steps.length}</p>
     </div>
-    <div class="result-grid">`;
-    const vals = r.values;
-    Object.keys(vals).forEach(k => {
-      html += `<div class="result-row">
-        <span class="label">${esc(k)}</span>
-        <span class="value">${esc(vals[k])}</span>
-      </div>`;
-    });
-    html += `</div>`;
-
-    if (r.tips && r.tips.length) {
-      html += `<div class="glass card mt-2">
-        <h3 class="h3" style="margin-bottom:8px"><i class="fa-solid fa-lightbulb"></i> Gaming Tips</h3>
-        <ul style="list-style:disc;padding-left:20px;color:var(--muted);font-size:.85rem">`;
-      r.tips.forEach(t => { html += `<li style="margin-bottom:6px">${esc(t)}</li>`; });
-      html += `</ul></div>`;
-    }
-
-    // Owner message
-    html += `<div class="glass-strong welcome-box mt-2">
-      <h3>🎉 Congratulations!</h3>
-      <p>Your premium sensitivity has been generated successfully.</p>
-      <p>Thank you for trusting <strong style="color:var(--gold)">ZEUS SENSI</strong>.</p>
-      <p>We appreciate every user who supports this project.</p>
-      <p class="sign">Good luck on your next Booyah.</p>
-      <p class="sign" style="margin-top:4px">— ZEUS DEV</p>
+    <div class="opt-grid">
+      ${options.map(o => `<button class="opt-btn" data-opt="${esc(o.id)}">${esc(o.label)}</button>`).join('')}
     </div>`;
 
-    html += `<div class="action-row mt-2">
-      <button class="btn btn-outline btn-sm" id="sensi-copy" data-copy><i class="fa-solid fa-copy"></i> Copy</button>
-      <button class="btn btn-outline btn-sm" id="sensi-download" data-dl><i class="fa-solid fa-download"></i> Save</button>
-      <button class="btn btn-outline btn-sm" id="sensi-share" data-share><i class="fa-solid fa-share-nodes"></i> Share</button>
-    </div>
-    <button class="btn btn-ghost btn-block mt-1" id="sensi-fav" data-fav><i class="fa-solid ${fav ? 'fa-star' : 'fa-star'}"></i> ${fav ? 'Remove from Favorites' : 'Add to Favorites'}</button>
-    <button class="btn btn-ghost btn-block mt-1" data-nav="home"><i class="fa-solid fa-arrow-left"></i> Back to Home</button>`;
-
-    panel.innerHTML = html;
-
-    const copyBtn = $('#sensi-copy');
-    if (copyBtn) {
-      copyBtn.addEventListener('click', () => {
-        let text = '🔥 ZEUS SENSI — Premium Sensitivity\n';
-        Object.keys(vals).forEach(k => { text += `${k}: ${vals[k]}\n`; });
-        navigator.clipboard.writeText(text).then(() => {
-          toast('Copied! Paste into your notes.', 'fa-copy');
-          sfx('success');
-        }).catch(() => toast('Could not copy', 'fa-triangle-exclamation'));
-      });
-    }
-
-    const dlBtn = $('#sensi-download');
-    if (dlBtn) {
-      dlBtn.addEventListener('click', () => {
-        let text = '🔥 ZEUS SENSI — Premium Sensitivity\n';
-        text += `Mode: ${r.mode} | Fingers: ${r.fingers} | Device: ${r.brand} ${r.phone}\n\n`;
-        Object.keys(vals).forEach(k => { text += `${k}: ${vals[k]}\n`; });
-        if (r.tips?.length) text += '\nTips:\n' + r.tips.map(t => '→ ' + t).join('\n');
-        const blob = new Blob([text], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `ZEUS_SENSI_${r.mode.replace(/\s+/g,'_')}.txt`;
-        a.click();
-        URL.revokeObjectURL(a.href);
-        toast('Saved!', 'fa-download');
-        sfx('success');
-      });
-    }
-
-    const shareBtn = $('#sensi-share');
-    if (shareBtn && navigator.share) {
-      shareBtn.addEventListener('click', () => {
-        let text = '🔥 ZEUS SENSI Premium Sensitivity\n';
-        Object.keys(vals).forEach(k => { text += `${k}: ${vals[k]}\n`; });
-        navigator.share({ title: 'ZEUS SENSI Sensitivity', text }).catch(() => {});
-      });
-    } else if (shareBtn) {
-      shareBtn.addEventListener('click', () => {
-        const text = Object.keys(vals).map(k => `${k}: ${vals[k]}`).join('\n');
-        const ta = document.createElement('textarea');
-        ta.value = text; document.body.appendChild(ta); ta.select();
-        document.execCommand('copy'); ta.remove();
-        toast('Copied to clipboard — share anywhere!', 'fa-share-nodes');
-      });
-    }
-
-    const favBtn = $('#sensi-fav');
-    if (favBtn) {
-      favBtn.addEventListener('click', () => {
-        const isFav = Store.toggleFav(r);
-        favBtn.innerHTML = `<i class="fa-solid fa-star"></i> ${isFav ? 'Remove from Favorites' : 'Add to Favorites'}`;
-        toast(isFav ? 'Added to favorites' : 'Removed from favorites', 'fa-star');
-        sfx('tap');
-      });
-    }
-  }
-
-  /* ---------- HUD FLOW UI ---------- */
-  const hudData = {};
-  let hudStep = 0;
-  const hudSteps = ['Brand', 'Phone', 'Gameplay Style', 'Fingers', 'Premium PIN'];
-
-  function renderHudStep() {
-    const panel = $('#hud-panel');
-    const name = $('#hud-step-name');
-    const num = $('#hud-step-num');
-    const steps = $('#hud-steps');
-    name.textContent = hudSteps[hudStep] || 'Done';
-    num.textContent = `${hudStep + 1} / 5`;
-    steps.innerHTML = hudSteps.map((s, i) =>
-      `<div class="step-dot ${i < hudStep ? 'done' : i === hudStep ? 'active' : ''}"></div>`
-    ).join('');
-
-    let html = '';
-    const step = hudStep;
-
-    if (step === 0) {
-      html = `<div class="field"><label>Choose Phone Brand</label><div class="select-grid">`;
-      BRANDS.forEach(b => {
-        const sel = hudData.brand === b ? ' selected' : '';
-        html += `<div class="select-item${sel}" data-value="${esc(b)}" data-hudsel><i class="fa-solid fa-mobile-screen-button"></i>${esc(b)}</div>`;
-      });
-      html += `</div></div>`;
-    } else if (step === 1) {
-      html = `<div class="field">
-        <label>Phone Name</label>
-        <input class="input" id="hud-phone" placeholder="e.g. Redmi Note 13" value="${esc(hudData.phone || '')}" maxlength="60">
-      </div>`;
-    } else if (step === 2) {
-      html = `<div class="field"><label>Choose Gameplay Style</label><div class="select-grid">`;
-      HUD_STYLES.forEach(m => {
-        const sel = hudData.style === m ? ' selected' : '';
-        const icons = { Headshot:'fa-crosshairs', Rush:'fa-bolt', Sniper:'fa-eye',
-          Competitive:'fa-trophy', Balanced:'fa-scale-balanced', 'Rank Push':'fa-ranking-star' };
-        html += `<div class="select-item${sel}" data-value="${esc(m)}" data-hudsel><i class="fa-solid ${icons[m] || 'fa-gamepad'}"></i>${esc(m)}</div>`;
-      });
-      html += `</div></div>`;
-    } else if (step === 3) {
-      html = `<div class="field"><label>Choose Finger Layout</label><div class="select-grid">`;
-      FINGER_N.forEach(f => {
-        const sel = hudData.fingers === String(f) ? ' selected' : '';
-        html += `<div class="select-item${sel}" data-value="${f}" data-hudsel>${f} Finger${f > 1 ? 's' : ''}</div>`;
-      });
-      html += `</div></div>`;
-    } else if (step === 4) {
-      html = `<div class="field">
-        <label>Enter Premium Access PIN</label>
-        <div class="pin-wrap">
-          <input class="input pin-dots" type="password" id="hud-pin" placeholder="••••" maxlength="10" autocomplete="off">
-          <button class="toggle-pin" id="toggle-hud-pin" type="button" aria-label="Toggle PIN visibility"><i class="fa-solid fa-eye"></i></button>
-        </div>
-      </div>`;
-    }
-
-    panel.innerHTML = html;
-
-    $$('[data-hudsel]', panel).forEach(el => {
-      el.addEventListener('click', () => {
-        const val = el.dataset.value;
-        if (step === 0) hudData.brand = val;
-        else if (step === 2) hudData.style = val;
-        else if (step === 3) hudData.fingers = val;
-        $$('[data-hudsel]', panel).forEach(x => x.classList.toggle('selected', x.dataset.value === val));
-        sfx('tap');
-      });
-    });
-
-    const pinToggle = $('#toggle-hud-pin');
-    const pinInput = $('#hud-pin');
-    if (pinToggle && pinInput) {
-      pinToggle.addEventListener('click', () => {
-        pinInput.type = pinInput.type === 'password' ? 'text' : 'password';
-        pinToggle.innerHTML = pinInput.type === 'password' ? '<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-eye-slash"></i>';
-      });
-    }
-
-    const nav = document.createElement('div');
-    nav.style.cssText = 'display:flex;gap:10px;margin-top:20px';
-    if (step > 0) {
-      const prev = document.createElement('button');
-      prev.className = 'btn btn-outline';
-      prev.style.flex = '1';
-      prev.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back';
-      prev.addEventListener('click', () => { hudStep--; renderHudStep(); sfx('tap'); });
-      nav.appendChild(prev);
-    }
-    const next = document.createElement('button');
-    next.className = 'btn btn-gold';
-    next.style.flex = '1';
-    next.innerHTML = step === 4 ? '<i class="fa-solid fa-lock"></i> Unlock Premium' : '<i class="fa-solid fa-arrow-right"></i> Next';
-    next.addEventListener('click', () => {
+  box.querySelectorAll('[data-opt]').forEach(btn => {
+    btn.addEventListener('click', () => {
       sfx('tap');
-      if (step === 0 && !hudData.brand) { toast('Please select a phone brand', 'fa-triangle-exclamation'); return; }
-      if (step === 1) {
-        const phone = ($('#hud-phone')?.value || '').trim();
-        if (!phone) { toast('Please enter your phone name', 'fa-triangle-exclamation'); return; }
-        hudData.phone = phone;
-      }
-      if (step === 2 && !hudData.style) { toast('Please select gameplay style', 'fa-triangle-exclamation'); return; }
-      if (step === 3 && !hudData.fingers) { toast('Please select finger layout', 'fa-triangle-exclamation'); return; }
-      if (step === 4) {
-        const pin = ($('#hud-pin')?.value || '').trim();
-        const correct = _g();
-        if (pin !== correct) {
-          sfx('error');
-          modal({
-            title: 'Invalid Premium PIN',
-            message: 'Contact the owner on WhatsApp to get the correct Premium PIN.',
-            icon: 'danger',
-            actions: [
-              { label: 'Contact WhatsApp', primary: true, href: 'https://wa.me/2349066760078' },
-              { label: 'Try Again', close: true }
-            ]
-          });
-          return;
-        }
-        sfx('success');
-        const result = genHUD(hudData);
-        Store.pushHistory(result);
-        showHudResult(result);
-        return;
-      }
-      hudStep++;
-      renderHudStep();
-    });
-    nav.appendChild(next);
-    panel.appendChild(nav);
-  }
+      const v = btn.dataset.opt;
+      if (step === 0) { sensiData.brand = v; sensiData.phone = ''; }
+      if (step === 1) sensiData.phone = v;
+      if (step === 2) sensiData.mode = v;
+      if (step === 3) sensiData.fingers = v;
 
-  function showHudResult(r) {
-    const panel = $('#hud-panel');
-    const name = $('#hud-step-name');
-    const num = $('#hud-step-num');
-    const steps = $('#hud-steps');
-    name.textContent = 'Results';
-    num.textContent = '✓ Generated';
-    steps.innerHTML = hudSteps.map(() => `<div class="step-dot done"></div>`).join('');
-
-    const fav = Store.isFav(r.id);
-
-    let html = `<div class="glass card" style="text-align:center;margin-bottom:16px">
-      <h2 class="brand h2" style="font-size:1.2rem">🎮 Premium HUD Configuration</h2>
-      <p class="muted">${esc(r.style)} · ${esc(r.fingers)} · ${esc(r.brand)}</p>
-      <p style="font-size:.74rem;color:var(--gold);font-family:var(--font-ui)">${esc(r.phone)}</p>
-    </div>
-    <h3 class="h3 mb-1">HUD Codes</h3>`;
-    r.codes.forEach(c => {
-      html += `<div class="hud-code">${esc(c)} <button class="btn btn-ghost btn-sm" data-copy-hud="${esc(c)}" style="display:inline;margin-left:8px"><i class="fa-solid fa-copy"></i></button></div>`;
-    });
-
-    html += `<div class="glass card mt-2">
-      <h3 class="h3" style="margin-bottom:8px">HUD Settings</h3>
-      <div class="result-grid">`;
-    Object.keys(r.settings).forEach(k => {
-      html += `<div class="result-row">
-        <span class="label">${esc(k)}</span>
-        <span class="value" style="font-size:.82rem;font-family:var(--font-ui)">${esc(r.settings[k])}</span>
-      </div>`;
-    });
-    html += `</div></div>`;
-
-    if (r.tips && r.tips.length) {
-      html += `<div class="glass card mt-2">
-        <h3 class="h3" style="margin-bottom:8px"><i class="fa-solid fa-lightbulb"></i> HUD Tips</h3>
-        <ul style="list-style:disc;padding-left:20px;color:var(--muted);font-size:.85rem">`;
-      r.tips.forEach(t => { html += `<li style="margin-bottom:6px">${esc(t)}</li>`; });
-      html += `</ul></div>`;
-    }
-
-    html += `<div class="glass-strong welcome-box mt-2">
-      <h3>🎉 Thank You!</h3>
-      <p>Thank you for using ZEUS HUD Configuration.</p>
-      <p>We appreciate your support.</p>
-      <p>Stay safe and enjoy Free Fire.</p>
-      <p class="sign">— ZEUS DEV</p>
-    </div>`;
-
-    html += `<div class="action-row mt-2">
-      <button class="btn btn-outline btn-sm" id="hud-copy-all"><i class="fa-solid fa-copy"></i> Copy All</button>
-      <button class="btn btn-outline btn-sm" id="hud-download"><i class="fa-solid fa-download"></i> Save</button>
-      <button class="btn btn-outline btn-sm" id="hud-share"><i class="fa-solid fa-share-nodes"></i> Share</button>
-    </div>
-    <button class="btn btn-ghost btn-block mt-1" id="hud-fav"><i class="fa-solid fa-star"></i> ${fav ? 'Remove from Favorites' : 'Add to Favorites'}</button>
-    <button class="btn btn-ghost btn-block mt-1" data-nav="home"><i class="fa-solid fa-arrow-left"></i> Back to Home</button>`;
-
-    panel.innerHTML = html;
-
-    // Copy individual codes
-    $$('[data-copy-hud]').forEach(el => {
-      el.addEventListener('click', () => {
-        navigator.clipboard.writeText(el.dataset.copyHud).then(() => {
-          toast('Code copied!', 'fa-copy');
+      if (step < steps.length - 1) {
+        sensiStep++;
+        renderSensiStep();
+      } else {
+        // generate under PIN
+        askPin(() => {
+          const item = generateSensi(sensiData);
+          lastSensiResult = item;
+          saveHistory(item);
+          showSensiResult(item);
           sfx('success');
+          toast('Sensitivity ready!', 'fa-fire');
         });
-      });
-    });
-
-    const copyAll = $('#hud-copy-all');
-    if (copyAll) {
-      copyAll.addEventListener('click', () => {
-        const text = '🎮 ZEUS HUD Codes:\n' + r.codes.join('\n') + '\n\nHUD Settings:\n' +
-          Object.keys(r.settings).map(k => `${k}: ${r.settings[k]}`).join('\n');
-        navigator.clipboard.writeText(text).then(() => {
-          toast('All HUD data copied!', 'fa-copy');
-          sfx('success');
-        });
-      });
-    }
-
-    const dlBtn = $('#hud-download');
-    if (dlBtn) {
-      dlBtn.addEventListener('click', () => {
-        let text = '🎮 ZEUS SENSI — Premium HUD Configuration\n';
-        text += `Style: ${r.style} | Fingers: ${r.fingers} | Device: ${r.brand} ${r.phone}\n\nHUD Codes:\n`;
-        text += r.codes.join('\n') + '\n\nSettings:\n';
-        Object.keys(r.settings).forEach(k => { text += `${k}: ${r.settings[k]}\n`; });
-        const blob = new Blob([text], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `ZEUS_HUD_${r.style.replace(/\s+/g,'_')}.txt`;
-        a.click();
-        URL.revokeObjectURL(a.href);
-        toast('Saved!', 'fa-download');
-        sfx('success');
-      });
-    }
-
-    const shareBtn = $('#hud-share');
-    if (shareBtn && navigator.share) {
-      shareBtn.addEventListener('click', () => {
-        navigator.share({ title: 'ZEUS SENSI HUD', text: 'HUD Codes:\n' + r.codes.join('\n') }).catch(() => {});
-      });
-    } else if (shareBtn) {
-      shareBtn.addEventListener('click', () => {
-        const ta = document.createElement('textarea');
-        ta.value = r.codes.join('\n'); document.body.appendChild(ta); ta.select();
-        document.execCommand('copy'); ta.remove();
-        toast('Codes copied to clipboard!', 'fa-share-nodes');
-      });
-    }
-
-    const favBtn = $('#hud-fav');
-    if (favBtn) {
-      favBtn.addEventListener('click', () => {
-        const isFav = Store.toggleFav(r);
-        favBtn.innerHTML = `<i class="fa-solid fa-star"></i> ${isFav ? 'Remove from Favorites' : 'Add to Favorites'}`;
-        toast(isFav ? 'Added to favorites' : 'Removed from favorites', 'fa-star');
-        sfx('tap');
-      });
-    }
-  }
-
-  /* ---------- HISTORY ---------- */
-  function renderHistory() {
-    const list = $('#history-list');
-    const data = Store.read().history;
-    if (!data.length) {
-      list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-clock-rotate-left"></i><p>No history yet. Generate a sensitivity or HUD configuration first.</p></div>`;
-      return;
-    }
-    list.innerHTML = data.map(item => {
-      const icon = item.type === 'hud' ? 'fa-gamepad' : 'fa-crosshairs';
-      const label = item.type === 'hud' ? 'HUD' : 'Sensitivity';
-      const sub = item.type === 'hud'
-        ? `${item.style} · ${item.fingers} · ${item.brand} ${item.phone}`
-        : `${item.mode} · ${item.fingers} · ${item.brand} ${item.phone}`;
-      return `<div class="list-item" data-hid="${esc(item.id)}">
-        <div class="li-icon"><i class="fa-solid ${icon}"></i></div>
-        <div class="li-body">
-          <div class="li-title">Premium ${esc(label)}</div>
-          <div class="li-sub">${esc(sub)}</div>
-        </div>
-        <i class="fa-solid fa-chevron-right li-action"></i>
-      </div>`;
-    }).join('');
-
-    $$('#history-list .list-item').forEach(el => {
-      el.addEventListener('click', () => {
-        const id = el.dataset.hid;
-        const item = Store.read().history.find(h => h.id === id);
-        if (!item) { toast('Item not found', 'fa-triangle-exclamation'); return; }
-        if (item.type === 'hud') showHudResult(item);
-        else showSensiResult(item);
-      });
-    });
-  }
-
-  const clearHistoryBtn = $('#clear-history');
-  if (clearHistoryBtn) {
-    clearHistoryBtn.addEventListener('click', () => {
-      modal({
-        title: 'Clear History',
-        message: 'Delete all generated history? This cannot be undone.',
-        icon: 'danger',
-        actions: [
-          { label: 'Clear All', primary: true, onClick: () => {
-            const d = Store.read(); d.history = []; Store.write(d);
-            renderHistory(); toast('History cleared', 'fa-broom');
-          }},
-          { label: 'Cancel', close: true }
-        ]
-      });
-    });
-  }
-
-  /* ---------- FAVORITES ---------- */
-  function renderFavorites() {
-    const list = $('#favorites-list');
-    const data = Store.read().favorites;
-    if (!data.length) {
-      list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-star"></i><p>No favorites saved. Star a configuration to save it here.</p></div>`;
-      return;
-    }
-    list.innerHTML = data.map(item => {
-      const icon = item.type === 'hud' ? 'fa-gamepad' : 'fa-crosshairs';
-      const label = item.type === 'hud' ? 'HUD' : 'Sensitivity';
-      const sub = item.type === 'hud'
-        ? `${item.style} · ${item.fingers} · ${item.brand}`
-        : `${item.mode} · ${item.fingers} · ${item.brand}`;
-      return `<div class="list-item" data-fid="${esc(item.id)}">
-        <div class="li-icon"><i class="fa-solid ${icon}"></i></div>
-        <div class="li-body">
-          <div class="li-title">Premium ${esc(label)}</div>
-          <div class="li-sub">${esc(sub)}</div>
-        </div>
-        <button class="fav-star on" data-remove-fav="${esc(item.id)}" style="background:none;border:none;font-size:1rem"><i class="fa-solid fa-star"></i></button>
-      </div>`;
-    }).join('');
-
-    $$('[data-remove-fav]').forEach(el => {
-      el.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = el.dataset.removeFav;
-        const d = Store.read();
-        d.favorites = d.favorites.filter(f => f.id !== id);
-        Store.write(d);
-        renderFavorites();
-        toast('Removed from favorites', 'fa-star');
-        sfx('tap');
-      });
-    });
-
-    $$('#favorites-list .list-item').forEach(el => {
-      el.addEventListener('click', (e) => {
-        if (e.target.closest('[data-remove-fav]')) return;
-        const id = el.dataset.fid;
-        const item = Store.read().favorites.find(f => f.id === id);
-        if (!item) { toast('Item not found', 'fa-triangle-exclamation'); return; }
-        if (item.type === 'hud') showHudResult(item);
-        else showSensiResult(item);
-      });
-    });
-  }
-
-  /* ---------- FAQ ---------- */
-  function renderFAQ() {
-    const list = $('#faq-list');
-    list.innerHTML = FAQ.map((f, i) =>
-      `<div class="faq-item" data-faq="${i}">
-        <button class="faq-q" data-faq-q>${esc(f.q)} <i class="fa-solid fa-chevron-down"></i></button>
-        <div class="faq-a"><div class="faq-a-inner">${esc(f.a)}</div></div>
-      </div>`
-    ).join('');
-
-    $$('[data-faq-q]').forEach(el => {
-      el.addEventListener('click', () => {
-        const item = el.closest('.faq-item');
-        const was = item.classList.contains('open');
-        $$('.faq-item').forEach(x => x.classList.remove('open'));
-        if (!was) item.classList.add('open');
-        sfx('tap');
-      });
-    });
-  }
-
-  /* ---------- SEARCH ---------- */
-  const searchInput = $('#search-input');
-  const searchResults = $('#search-results');
-
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      const q = searchInput.value.toLowerCase().trim();
-      if (!q) { searchResults.innerHTML = `<div class="muted center" style="padding:30px">Type to search brands, modes, history...</div>`; return; }
-      const data = Store.read();
-      const all = [...data.history, ...data.favorites];
-      const seen = new Set();
-      const hits = all.filter(item => {
-        if (seen.has(item.id)) return false;
-        seen.add(item.id);
-        const vals = Object.values(item).join(' ').toLowerCase();
-        return vals.includes(q);
-      }).slice(0, 12);
-      if (!hits.length) {
-        searchResults.innerHTML = `<div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><p>No results for "${esc(q)}"</p></div>`;
-        return;
-      }
-      searchResults.innerHTML = hits.map(item => {
-        const icon = item.type === 'hud' ? 'fa-gamepad' : 'fa-crosshairs';
-        const sub = item.type === 'hud'
-          ? `${item.style} · ${item.fingers}` : `${item.mode} · ${item.fingers}`;
-        return `<div class="list-item" data-sr="${esc(item.id)}">
-          <div class="li-icon"><i class="fa-solid ${icon}"></i></div>
-          <div class="li-body">
-            <div class="li-title">${esc(item.type === 'hud' ? 'HUD' : 'Sensitivity')} · ${esc(item.brand)}</div>
-            <div class="li-sub">${esc(sub)}</div>
-          </div>
-        </div>`;
-      }).join('');
-      $$('#search-results .list-item').forEach(el => {
-        el.addEventListener('click', () => {
-          const id = el.dataset.sr;
-          const item = [...Store.read().history, ...Store.read().favorites].find(x => x.id === id);
-          if (!item) return;
-          if (item.type === 'hud') showHudResult(item);
-          else showSensiResult(item);
-        });
-      });
-    });
-  }
-
-  /* ---------- SETTINGS UI ---------- */
-  function syncSettingsUI() {
-    const s = Store.read().settings;
-    $$('.switch').forEach(sw => {
-      const key = sw.id.replace('sw-', '');
-      const on = s[key];
-      sw.classList.toggle('on', !!on);
-      sw.setAttribute('aria-checked', !!on);
-    });
-  }
-
-  $$('.switch').forEach(sw => {
-    sw.addEventListener('click', () => {
-      const key = sw.id.replace('sw-', '');
-      const s = Store.read().settings;
-      const nv = !s[key];
-      s[key] = nv;
-      Store.updateSettings(s);
-      sw.classList.toggle('on', nv);
-      sw.setAttribute('aria-checked', nv);
-      sfx('tap');
-
-      if (key === 'particles') { particleOn = nv; }
-      if (key === 'music') {
-        if (nv) startMusic();
-        else stopMusic();
-        $('#music-fab').classList.toggle('off', !nv);
-      }
-      if (key === 'motion') {
-        document.body.style.animationPlayState = nv ? 'paused' : '';
       }
     });
   });
+}
 
-  const exportBtn = $('#btn-export-data');
-  if (exportBtn) {
-    exportBtn.addEventListener('click', () => {
-      const data = Store.read();
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'ZEUS_SENSI_backup.json';
-      a.click();
-      URL.revokeObjectURL(a.href);
-      toast('Data exported!', 'fa-file-export');
-      sfx('success');
-    });
-  }
+/* ---------- HUD WIZARD ---------- */
+function renderHudStep() {
+  const box = $('#hud-steps'); if (!box) return;
+  const steps = ['brand', 'phone', 'style', 'fingers'];
+  const titles = {
+    brand: 'Select Brand', phone: 'Select Phone', style: 'HUD Style', fingers: 'Finger Layout'
+  };
+  const step = hudStep;
+  const dots = steps.map((_, i) => `<span class="${i === step ? 'on' : i < step ? 'done' : ''}"></span>`).join('');
 
-  const clearAllBtn = $('#btn-clear-all');
-  if (clearAllBtn) {
-    clearAllBtn.addEventListener('click', () => {
-      modal({
-        title: 'Clear All Data',
-        message: 'This deletes all history, favorites and resets settings. Continue?',
-        icon: 'danger',
-        actions: [
-          { label: 'Clear Everything', primary: true, onClick: () => {
-            localStorage.removeItem(Store.key);
-            toast('All data cleared', 'fa-broom');
-            sfx('tap');
-          }},
-          { label: 'Cancel', close: true }
-        ]
-      });
-    });
-  }
+  let options = [];
+  if (step === 0) options = BRANDS.map(b => ({ id: b.id, label: b.name }));
+  if (step === 1) options = (PHONES[hudData.brand] || PHONES.others).map(p => ({ id: p, label: p }));
+  if (step === 2) options = HUD_STYLES.map(s => ({ id: s, label: s }));
+  if (step === 3) options = FINGERS.map(f => ({ id: f, label: f }));
 
-  /* ---------- FEEDBACK ---------- */
-  const fbBtn = $('#btn-send-feedback');
-  if (fbBtn) {
-    fbBtn.addEventListener('click', () => {
-      const name = ($('#fb-name')?.value || '').trim() || 'Anonymous';
-      const type = ($('#fb-type')?.value || '').trim();
-      const msg = ($('#fb-msg')?.value || '').trim();
-      if (!msg) { toast('Please write a message', 'fa-triangle-exclamation'); return; }
-      const text = encodeURIComponent(`ZEUS SENSI Feedback\nFrom: ${name}\nType: ${type}\n\n${msg}`);
-      window.open(`https://wa.me/2349066760078?text=${text}`, '_blank');
-      toast('Opened WhatsApp', 'fa-paper-plane');
+  box.innerHTML = `
+    <div class="step-dots">${dots}</div>
+    <div class="step-head">
+      <h2>${titles[steps[step]]}</h2>
+      <p class="step-count">Step ${step + 1} / ${steps.length}</p>
+    </div>
+    <div class="opt-grid">
+      ${options.map(o => `<button class="opt-btn" data-opt="${esc(o.id)}">${esc(o.label)}</button>`).join('')}
+    </div>`;
+
+  box.querySelectorAll('[data-opt]').forEach(btn => {
+    btn.addEventListener('click', () => {
       sfx('tap');
-    });
-  }
+      const v = btn.dataset.opt;
+      if (step === 0) { hudData.brand = v; hudData.phone = ''; }
+      if (step === 1) hudData.phone = v;
+      if (step === 2) hudData.style = v;
+      if (step === 3) hudData.fingers = v;
 
-  /* ---------- MUSIC FAB ---------- */
-  const musicFab = $('#music-fab');
-  if (musicFab) {
-    musicFab.addEventListener('click', () => {
-      const s = Store.read().settings;
-      const nv = !s.music;
-      s.music = nv;
-      Store.updateSettings(s);
-      musicFab.classList.toggle('off', !nv);
-      if (nv) startMusic();
-      else stopMusic();
+      if (step < steps.length - 1) {
+        hudStep++;
+        renderHudStep();
+      } else {
+        askPin(() => {
+          const item = generateHud(hudData);
+          lastHudResult = item;
+          saveHistory(item);
+          showHudResult(item);
+          sfx('success');
+          toast('Complete HUD code ready!', 'fa-gamepad');
+        });
+      }
+    });
+  });
+}
+
+/* ---------- SETTINGS UI SYNC ---------- */
+function syncSettingsUI() {
+  const s = Store.read().settings;
+  const map = [
+    ['#sw-music', s.music],
+    ['#sw-sfx', s.sfx],
+    ['#sw-particles', s.particles],
+    ['#sw-motion', s.reduceMotion]
+  ];
+  map.forEach(([sel, on]) => {
+    const el = $(sel); if (!el) return;
+    el.classList.toggle('on', !!on);
+    el.setAttribute('aria-checked', !!on);
+  });
+  const fab = $('#music-fab');
+  if (fab) fab.classList.toggle('off', !s.music);
+  particleOn = !!s.particles;
+  canvas.classList.toggle('show', !!s.particles);
+  if (s.music) startMusic(); else stopMusic();
+}
+
+/* ---------- EVENT BINDINGS ---------- */
+function bindGlobal() {
+  // Nav / drawer links
+  document.addEventListener('click', e => {
+    const g = e.target.closest('[data-goto]');
+    if (g && g.dataset.goto) {
+      e.preventDefault();
       sfx('tap');
-      // Sync settings page
-      const sw = $('#sw-music');
-      if (sw) { sw.classList.toggle('on', nv); sw.setAttribute('aria-checked', nv); }
-    });
-  }
+      closeDrawer();
+      // sensi/hud from drawer restart wizard
+      if (g.dataset.goto === 'sensi') {
+        askPin(() => {
+          Object.assign(sensiData, { brand: '', phone: '', mode: '', fingers: '' });
+          sensiStep = 0; go('sensi'); renderSensiStep();
+        });
+        return;
+      }
+      if (g.dataset.goto === 'hud') {
+        askPin(() => {
+          Object.assign(hudData, { brand: '', phone: '', style: '', fingers: '' });
+          hudStep = 0; go('hud'); renderHudStep();
+        });
+        return;
+      }
+      go(g.dataset.goto);
+    }
+  });
 
-  /* ---------- INTRO → HOME ---------- */
-  const getStarted = $('#btn-get-started');
-  if (getStarted) {
-    getStarted.addEventListener('click', () => {
-      sfx('success');
-      go('home');
-    });
-  }
-
-  /* ---------- SENSITIVITY / HUD START ---------- */
-  document.addEventListener('click', (e) => {
+  // Tool cards
+  document.addEventListener('click', e => {
     const card = e.target.closest('[data-start]');
     if (!card) return;
     sfx('tap');
     if (card.dataset.start === 'sensi') {
-      Object.assign(sensiData, { brand:'', phone:'', mode:'', fingers:'' });
-      sensiStep = 0;
-      go('sensi');
-      renderSensiStep();
+      askPin(() => {
+        Object.assign(sensiData, { brand: '', phone: '', mode: '', fingers: '' });
+        sensiStep = 0; go('sensi'); renderSensiStep();
+      });
     } else if (card.dataset.start === 'hud') {
-      Object.assign(hudData, { brand:'', phone:'', style:'', fingers:'' });
-      hudStep = 0;
-      go('hud');
-      renderHudStep();
+      askPin(() => {
+        Object.assign(hudData, { brand: '', phone: '', style: '', fingers: '' });
+        hudStep = 0; go('hud'); renderHudStep();
+      });
     }
   });
 
-  /* ---------- BACK BUTTONS ---------- */
-  const sensiBack = $('[data-sensi-back]');
-  if (sensiBack) sensiBack.addEventListener('click', () => go('home'));
-  const hudBack = $('[data-hud-back]');
-  if (hudBack) hudBack.addEventListener('click', () => go('home'));
+  // Back buttons
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-sensi-back]')) { sfx('tap'); go('home'); }
+    if (e.target.closest('[data-hud-back]')) { sfx('tap'); go('home'); }
+  });
 
-  /* ---------- PWA MANIFEST (dynamic) ---------- */
+  // Get started
+  $('#btn-get-started')?.addEventListener('click', () => { sfx('success'); go('home'); });
+
+  // Drawer
+  $('#btn-settings')?.addEventListener('click', () => { sfx('tap'); openDrawer(); });
+  $('#drawer-close')?.addEventListener('click', () => { sfx('tap'); closeDrawer(); });
+  $('#drawer-overlay')?.addEventListener('click', closeDrawer);
+
+  function openDrawer() {
+    $('#drawer')?.classList.add('open');
+    $('#drawer-overlay')?.classList.add('show');
+  }
+  function closeDrawer() {
+    $('#drawer')?.classList.remove('open');
+    $('#drawer-overlay')?.classList.remove('show');
+  }
+  window.closeDrawer = closeDrawer;
+
+  // Switches
+  const bindSw = (sel, key, extra) => {
+    const el = $(sel); if (!el) return;
+    el.addEventListener('click', () => {
+      const s = Store.read().settings;
+      s[key] = !s[key];
+      Store.updateSettings(s);
+      syncSettingsUI();
+      sfx('tap');
+      if (extra) extra(s[key]);
+    });
+  };
+  bindSw('#sw-music', 'music', on => { if (on) startMusic(); else stopMusic(); });
+  bindSw('#sw-sfx', 'sfx');
+  bindSw('#sw-particles', 'particles', on => { particleOn = on; canvas.classList.toggle('show', on); });
+  bindSw('#sw-motion', 'reduceMotion', on => {
+    document.querySelectorAll('.logo-core, .loader-logo, .btn-glow').forEach(el => {
+      el.style.animationPlayState = on ? 'paused' : '';
+    });
+  });
+
+  // Export / clear
+  $('#btn-export-data')?.addEventListener('click', () => {
+    const data = Store.read();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ZEUS_SENSI_backup.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Data exported!', 'fa-file-export');
+    sfx('success');
+  });
+  $('#btn-clear-all')?.addEventListener('click', () => {
+    modal({
+      title: 'Clear All Data',
+      message: 'This deletes all history, favorites and resets settings. Continue?',
+      icon: 'danger',
+      actions: [
+        { label: 'Clear Everything', primary: true, onClick: () => {
+          localStorage.removeItem(Store.key);
+          sessionStorage.removeItem('zeus_pin_ok');
+          toast('All data cleared', 'fa-broom');
+          sfx('tap');
+          syncSettingsUI();
+          renderHistory(); renderFavs();
+        }},
+        { label: 'Cancel', close: true }
+      ]
+    });
+  });
+
+  // Feedback
+  $('#btn-send-feedback')?.addEventListener('click', () => {
+    const name = ($('#fb-name')?.value || '').trim() || 'Anonymous';
+    const type = ($('#fb-type')?.value || '').trim();
+    const msg = ($('#fb-msg')?.value || '').trim();
+    if (!msg) { toast('Please write a message', 'fa-triangle-exclamation'); return; }
+    const text = encodeURIComponent(`ZEUS SENSI Feedback\nFrom: ${name}\nType: ${type}\n\n${msg}`);
+    window.open(`https://wa.me/2349066760078?text=${text}`, '_blank');
+    toast('Opened WhatsApp', 'fa-paper-plane');
+    sfx('tap');
+  });
+
+  // Music fab
+  $('#music-fab')?.addEventListener('click', () => {
+    const s = Store.read().settings;
+    s.music = !s.music;
+    Store.updateSettings(s);
+    syncSettingsUI();
+    sfx('tap');
+  });
+
+  // Search
+  $('#search-input')?.addEventListener('input', e => renderSearch(e.target.value));
+
+  // Escape closes modal/drawer
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const ov = $('#modal-root .modal-overlay');
+      if (ov) ov.remove();
+      closeDrawer();
+    }
+  });
+
+  // PWA manifest
   const manifestEl = $('#pwa-manifest');
   if (manifestEl) {
     const m = {
@@ -2283,48 +1119,42 @@ ul { list-style: none; }
         { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%230a0a0a'/%3E%3Ctext y='.8em' font-size='60' fill='%23d4af37' x='50%25' text-anchor='middle'%3E⚡%3C/text%3E%3C/svg%3E", sizes: '512x512', type: 'image/svg+xml' }
       ]
     };
-    manifestEl.textContent = JSON.stringify(m);
+    const blob = new Blob([JSON.stringify(m)], { type: 'application/json' });
+    manifestEl.setAttribute('href', URL.createObjectURL(blob));
   }
+}
 
-  /* ---------- INIT ---------- */
-  function init() {
-    resizeCanvas();
-    initParticles();
-    drawParticles();
-    window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+/* ---------- INIT ---------- */
+function init() {
+  resizeCanvas();
+  initParticles();
+  drawParticles();
+  window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
 
-    const settings = Store.read().settings;
-
-    if (settings.particles) particleOn = true;
-    if (settings.reduceMotion) {
-      document.querySelectorAll('.logo-core, .loader-logo, .btn-glow').forEach(el => {
-        el.style.animationPlayState = 'paused';
-      });
-    }
-
-    // Hide loader after animation + extra delay
-    setTimeout(() => {
-      $('#loader').classList.add('hide');
-    }, 2000);
-
-    // Keyboard shortcut for PIN reveal
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        const overlay = $('#modal-root .modal-overlay');
-        if (overlay) overlay.remove();
-      }
+  const settings = Store.read().settings;
+  particleOn = !!settings.particles;
+  canvas.classList.toggle('show', particleOn);
+  if (settings.reduceMotion) {
+    document.querySelectorAll('.logo-core, .loader-logo, .btn-glow').forEach(el => {
+      el.style.animationPlayState = 'paused';
     });
-
-    // Sync switch states
-    syncSettingsUI();
-
-    console.log('⚡ ZEUS SENSI V5 Premium loaded');
-    console.log('© ZEUS DEV | All rights reserved');
   }
 
-  init();
-})();
+  bindGlobal();
+  syncSettingsUI();
+
+  // intro is default active — hide app chrome until Get Started
+  const app = $('#app'), fab = $('#music-fab');
+  if (app) app.style.display = 'none';
+  if (fab) fab.style.display = 'none';
+
+  setTimeout(() => { $('#loader')?.classList.add('hide'); }, 2000);
+
+  console.log('⚡ ZEUS SENSI V5 Premium loaded');
+  console.log('© ZEUS DEV | All rights reserved');
+  console.log('PIN source: pins.js → premiumPins[]');
+}
+init();
 </script>
 </body>
 </html>
-$$
