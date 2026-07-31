@@ -38,17 +38,6 @@ HOW TO REMOVE A PIN
 -------------------
 Just delete that line from the list.
 
-CAN I LOCK THE HUD SECTION BEHIND A PIN?
-----------------------------------------
-Yes. In pin/pin.js, find:
-
-   window.ZEUS_CONFIG = {
-     protectHudSection: false
-   };
-
-Change "false" to "true". Now the CREATORS CUSTOM HUD section
-stays hidden until someone enters a valid PIN.
-
 HOW TO UPLOAD TO GITHUB (emmyjosh65/ZEUS-SENSI-)
 ------------------------------------------------
 1. In your repo, create a new folder called  "pin"
