@@ -23,14 +23,3 @@ window.VALID_PINS = [
   "HEADSHOT01",
   "MRDANNY1"
 ];
-
-/* ================================================================
-   OPTIONAL CONFIG
-   - protectHudSection: true  = the "CREATORS CUSTOM HUD" section is
-                                hidden until a valid PIN is entered.
-     protectHudSection: false = HUD section is public (like ffsensi.com).
-   Change true/false below if you want.
-   ================================================================ */
-window.ZEUS_CONFIG = {
-  protectHudSection: false
-};
