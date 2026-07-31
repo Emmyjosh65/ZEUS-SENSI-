@@ -1,12 +1,12 @@
 /* ============================================================
    ZEUS SENSI — PREMIUM PIN SYSTEM
-   Add / remove / disable PINs here WITHOUT touching index.html
+   CHANGE YOUR PASS ANYTIME HERE — do NOT touch index.html
    ------------------------------------------------------------
    HOW TO USE:
-   - Add a new PIN:     "4821",
-   - Remove a PIN:      delete its line
-   - Disable a PIN:     // "2007",
-   The website checks if the entered PIN exists in this array.
+   - Add a new PIN:      "4821",
+   - Remove a PIN:       delete its line
+   - Disable a PIN:      // "2007",
+   The website checks the PIN you enter against this array.
    ============================================================ */
 
 const premiumPins = [
